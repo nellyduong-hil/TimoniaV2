@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin — Timonia OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+body{background:var(--bg)}
+.app{display:flex;height:calc(100vh - 57px);overflow:hidden}
+/* NAV ICÔNES */
+.nav-col{width:54px;flex-shrink:0;background:#1B1B1B;display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:4px}
+.ni{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;color:#888;transition:all .15s;position:relative}
+.ni:hover{background:#2a2a2a;color:#ccc}
+.ni.active{background:#2a2a2a;color:#fff}
+.ni.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:20px;background:var(--green);border-radius:0 2px 2px 0}
+.ni-sep{width:28px;height:1px;background:#333;margin:4px 0}
+.ni-bot{margin-top:auto}
+.ni-av{width:28px;height:28px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;cursor:pointer}
+/* LIST COL */
+.list-col{width:268px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.list-head{padding:10px 12px;border-bottom:1px solid var(--border);flex-shrink:0}
+.list-head-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.list-head-title{font-size:13px;font-weight:700}
+.search-wrap{position:relative}
+.search-wrap input{width:100%;border:1px solid var(--border);border-radius:var(--radius);padding:5px 8px 5px 24px;font-size:11px;background:var(--bg);outline:none}
+.search-wrap::before{content:'🔍';position:absolute;left:7px;top:6px;font-size:10px;pointer-events:none}
+.filter-pills{display:flex;gap:3px;flex-wrap:wrap;margin-top:6px}
+.fp{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;cursor:pointer;border:1px solid var(--border);color:var(--text3);background:var(--bg);transition:all .12s;white-space:nowrap}
+.fp.on{color:#fff;border-color:transparent}
+.list-scroll{flex:1;overflow-y:auto}
+.li{padding:9px 13px;border-bottom:1px solid var(--border);cursor:pointer;border-left:3px solid transparent;transition:all .12s;position:relative}
+.li:hover{background:var(--bg)}
+.li.active{background:var(--blue-light);border-left-color:var(--blue)}
+.li-ref{font-size:9px;font-family:monospace;color:var(--text3);margin-bottom:2px}
+.li-name{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px}
+.li-foot{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.li-notif{position:absolute;right:10px;top:10px;width:7px;height:7px;border-radius:50%;background:var(--red)}
+/* DETAIL COL */
+.detail-col{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.dbar{background:var(--surf);border-bottom:1px solid var(--border);padding:12px 18px;flex-shrink:0}
+.dbar-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}
+.dbar-title{font-family:'Lora',serif;font-size:17px;font-weight:600;margin-bottom:4px}
+.dbar-meta{font-size:11px;color:var(--text3);margin-bottom:5px}
+.team-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.t-chip{display:flex;align-items:center;gap:5px;padding:3px 9px;border-radius:6px;background:var(--bg);border:1px solid var(--border);font-size:11px;font-weight:600}
+.t-av{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;color:#fff;flex-shrink:0}
+.dtabs{flex:1;overflow-y:auto}
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:11px}
+thead tr{border-bottom:1px solid var(--border)}
+th{text-align:left;padding:7px 9px;color:var(--text3);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.05em}
+td{padding:8px 9px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg)}
+/* ROLE SLOT */
+.rs{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surf2);margin-bottom:6px}
+.rs-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0}
+.rs-info{flex:1}
+.rs-name{font-size:12px;font-weight:700}
+.rs-role{font-size:10px;color:var(--text3)}
+select.rs-sel{font-size:11px;padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:var(--bg);font-family:inherit;cursor:pointer;outline:none;max-width:200px}
+input.pct-input{width:52px;padding:3px 6px;border-radius:5px;border:1.5px solid var(--border);font-size:12px;font-weight:700;text-align:center;font-family:inherit;outline:none}
+input.pct-input:focus{border-color:var(--orange)}
+/* STATUS BIEN */
+.status-opt{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius);border:1.5px solid var(--border);cursor:pointer;margin-bottom:6px;transition:all .15s}
+.status-opt.selected{border-color:var(--green);background:var(--green-light)}
+.status-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+/* REP BAR */
+.rep-bar{height:6px;border-radius:3px;overflow:hidden;display:flex;gap:1px;margin:7px 0}
+.rs-b{height:100%;border-radius:1px}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-logo"><div class="nav-logo-mark">T</div><span>Timonia <span style="font-size:11px;font-weight:400;color:var(--text3)">OS Admin</span></span></div>
+  <div class="nav-right">
+    <div class="nav-avatar" id="navAv" style="background:#5FA694">ND</div>
+    <div><div class="nav-name" id="navName">—</div><div class="nav-role">Administrateur</div></div>
+    <button class="btn btn-ghost btn-sm" onclick="authLogout()">Déconnexion</button>
+  </div>
+</nav>
+
+<div class="app">
+  <!-- NAV ICÔNES -->
+  <div class="nav-col">
+    <div class="ni active" id="ni-pipeline" onclick="setNav('pipeline')" title="Pipeline">📋</div>
+    <div class="ni" id="ni-factures" onclick="setNav('factures')" title="Factures">🧾</div>
+    <div class="ni-sep"></div>
+    <div class="ni" id="ni-equipe" onclick="setNav('equipe')" title="Équipe">👥</div>
+    <div class="ni" id="ni-stats" onclick="setNav('stats')" title="Stats">📊</div>
+    <div class="ni-bot">
+      <div class="ni" title="Paramètres">⚙️</div>
+      <div class="ni-av" id="adminAv">ND</div>
+    </div>
+  </div>
+
+  <!-- LIST COL -->
+  <div class="list-col">
+    <div class="list-head">
+      <div class="list-head-top">
+        <span class="list-head-title" id="list-title">Pipeline</span>
+        <button class="btn btn-primary btn-sm" onclick="openNewDossierModal()">+ Nouveau</button>
+      </div>
+      <div class="search-wrap"><input type="text" id="searchQ" placeholder="Nom, réf, ville…" oninput="filterList()"></div>
+      <div class="filter-pills">
+        <span class="fp on" style="background:var(--text2);color:#fff" onclick="setPill('all',this)">Tous</span>
+        <span class="fp" onclick="setPill('conseil_flash',this)">⚡</span>
+        <span class="fp" onclick="setPill('audit',this)">🔍</span>
+        <span class="fp" onclick="setPill('mise_en_oeuvre',this)">🔧</span>
+        <span class="fp" onclick="setPill('valorisation',this)">📈</span>
+      </div>
+    </div>
+    <div class="list-scroll" id="list-scroll"></div>
+  </div>
+
+  <!-- DETAIL COL -->
+  <div class="detail-col" id="detail-col">
+    <!-- EMPTY -->
+    <div id="d-empty" style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--text3)">
+      <div style="font-size:40px">📋</div>
+      <div style="font-size:14px;font-weight:600">Sélectionnez un dossier</div>
+    </div>
+    <!-- DETAIL -->
+    <div id="d-detail" style="display:none;flex:1;flex-direction:column;overflow:hidden">
+      <div class="dbar">
+        <div class="dbar-top">
+          <div>
+            <div style="font-size:9px;font-family:monospace;color:var(--text3);margin-bottom:3px" id="d-ref">—</div>
+            <div class="dbar-title" id="d-name">—</div>
+            <div class="dbar-meta" id="d-meta">—</div>
+            <div id="d-badges" style="display:flex;gap:5px;flex-wrap:wrap"></div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-sm">📤 Relancer</button>
+            <button class="btn btn-primary btn-sm" onclick="advanceActiveStep()">→ Avancer</button>
+          </div>
+        </div>
+        <div id="d-team" class="team-row"></div>
+      </div>
+      <div class="tabs">
+        <button class="tab active" onclick="openATab('dossier',this)">📋 Dossier</button>
+        <button class="tab" onclick="openATab('timeline',this)">🗺️ Timeline</button>
+        <button class="tab" onclick="openATab('admin',this)">⚙️ Admin</button>
+        <button class="tab" onclick="openATab('facturation',this)">💰 Facturation</button>
+      </div>
+      <div class="dtabs">
+        <div class="tab-content active" id="atab-dossier" style="padding:18px"></div>
+        <div class="tab-content" id="atab-timeline" style="padding:18px"></div>
+        <div class="tab-content" id="atab-admin" style="padding:18px"></div>
+        <div class="tab-content" id="atab-facturation" style="padding:18px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NOUVEAU DOSSIER -->
+<div class="modal-overlay" id="newDossierModal" onclick="if(event.target===this)closeModal('newDossierModal')">
+  <div class="modal-box">
+    <div class="modal-head"><div class="modal-title">➕ Nouveau dossier</div><button class="btn btn-ghost btn-sm" onclick="closeModal('newDossierModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Nom du client</label><input type="text" placeholder="M./Mme Prénom Nom"></div>
+      <div class="form-group"><label>Adresse du bien</label><input type="text" placeholder="14 rue Pasteur, 69007 Lyon"></div>
+      <div class="form-group"><label>Expertise</label>
+        <select><option>⚡ Conseil Flash — 150€</option><option>🔍 Audit — 1 800€</option><option selected>🔧 Mise en œuvre — 8% travaux</option><option>📈 Valorisation — 5%/8%</option></select>
+      </div>
+      <div class="form-group"><label>Situation (description)</label><textarea rows="3" placeholder="Décrivez la situation…"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeModal('newDossierModal')">Annuler</button>
+      <button class="btn btn-primary" onclick="alert('Dossier créé !');closeModal('newDossierModal')">Créer le dossier →</button>
+    </div>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+const u=authRedirect();
+if(u){
+  document.getElementById('navAv').textContent=u.initials;
+  document.getElementById('navAv').style.background=u.color;
+  document.getElementById('navName').textContent=u.nom;
+  document.getElementById('adminAv').textContent=u.initials;
+}
+
+let activeNav='pipeline', activePill='all', activeD=null;
+
+function setNav(n){
+  activeNav=n;
+  document.querySelectorAll('.ni').forEach(el=>el.classList.remove('active'));
+  const ni=document.getElementById('ni-'+n);if(ni)ni.classList.add('active');
+  const titles={pipeline:'Pipeline',factures:'Factures',equipe:'Équipe',stats:'Statistiques'};
+  document.getElementById('list-title').textContent=titles[n]||n;
+  filterList();
+}
+
+function setPill(p,el){
+  activePill=p;
+  document.querySelectorAll('.fp').forEach(x=>{x.classList.remove('on');x.style.background='';x.style.color='';});
+  el.classList.add('on');
+  const c={all:'var(--text2)',conseil_flash:'#EDA100',audit:'#7F77DD',mise_en_oeuvre:'#FF8352',valorisation:'#5FA694'};
+  el.style.background=c[p]||'var(--text2)';el.style.color='#fff';
+  filterList();
+}
+
+function filterList(){
+  const q=(document.getElementById('searchQ').value||'').toLowerCase();
+  let data=DOSSIERS;
+  if(activePill!=='all') data=data.filter(d=>d.expertise_id===activePill);
+  if(q) data=data.filter(d=>d.client_nom.toLowerCase().includes(q)||d.ref.toLowerCase().includes(q));
+  document.getElementById('list-scroll').innerHTML=data.map(d=>{
+    const exp=getExpertise(d.expertise_id);
+    const urgent=d.sla!==null&&d.sla<0;
+    return `<div class="li${d.id===activeD?' active':''}" onclick="selectDossier('${d.id}')">
+      ${urgent?'<div class="li-notif"></div>':''}
+      <div class="li-ref">${d.ref}</div>
+      <div class="li-name">${d.client_nom}</div>
+      <div class="li-foot">
+        <span class="badge" style="background:${exp?exp.colorLight:'var(--bg)'};color:${exp?exp.colorDark:'var(--text3)'}">${exp?exp.icon+' '+exp.label:'—'}</span>
+        <span class="badge ${slaClass(d.sla)}">${slaLabel(d.sla)}</span>
+      </div>
+    </div>`;
+  }).join('')||'<div style="padding:20px;text-align:center;font-size:12px;color:var(--text3)">Aucun dossier</div>';
+}
+
+function selectDossier(id){
+  activeD=id;filterList();
+  const d=getDossier(id);if(!d)return;
+  const exp=getExpertise(d.expertise_id);
+  document.getElementById('d-empty').style.display='none';
+  const dd=document.getElementById('d-detail');dd.style.display='flex';
+  document.getElementById('d-ref').textContent=d.ref+' · '+d.date_creation;
+  document.getElementById('d-name').textContent=d.client_nom;
+  document.getElementById('d-meta').textContent=d.bien;
+  document.getElementById('d-badges').innerHTML=
+    `<span class="badge" style="background:${exp.colorLight};color:${exp.colorDark}">${exp.icon} ${exp.label}</span>
+     <span class="badge ${slaClass(d.sla)}">${slaLabel(d.sla)}</span>
+     <span class="badge ${d.statut==='actif'?'badge-green':'badge-gray'}">${d.statut==='actif'?'● Actif':'Clôturé'}</span>
+     ${d.montant?`<span class="badge badge-gray">${d.montant.toLocaleString('fr-FR')}€</span>`:''}`;
+  document.getElementById('d-team').innerHTML=
+    `<div class="t-chip"><div class="t-av" style="background:#FF8352">CG</div>Clara Guérin <span class="badge badge-orange" style="font-size:9px">Ops Front</span></div>
+     <div class="t-chip"><div class="t-av" style="background:#378ADD">SL</div>Sophie Leroux <span class="badge badge-blue" style="font-size:9px">B2B</span></div>
+     <button class="btn btn-ghost btn-sm" onclick="openATab('admin',null)">⚙️ Gérer</button>`;
+  renderDossierTab(d,exp);renderTimelineTab(d,exp);renderAdminTab(d,exp);renderFactTab(d,exp);
+}
+
+function openATab(id,btn){
+  document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('atab-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  else document.querySelectorAll('.tab').forEach(el=>{if(el.textContent.toLowerCase().includes(id.slice(0,3)))el.classList.add('active');});
+}
+
+function renderDossierTab(d,exp){
+  document.getElementById('atab-dossier').innerHTML=`
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">👤 Client</div>
+        <div class="field-row"><span class="field-lbl">Nom</span><span class="field-val">${d.client_nom}</span></div>
+        <div class="field-row"><span class="field-lbl">Bien</span><span class="field-val" style="font-size:11px">${d.bien}</span></div>
+        <div class="field-row"><span class="field-lbl">Expertise</span><span class="field-val">${exp.icon} ${exp.label}</span></div>
+        <div class="field-row"><span class="field-lbl">SLA</span><span class="field-val"><span class="badge ${slaClass(d.sla)}">${slaLabel(d.sla)}</span></span></div>
+        <div class="field-row"><span class="field-lbl">Statut</span><span class="field-val">
+          <select style="font-size:11px;padding:2px 6px;border-radius:5px;border:1px solid var(--border);background:var(--bg);font-family:inherit">
+            <option ${d.statut==='actif'?'selected':''}>Actif</option>
+            <option ${d.statut==='suspendu'?'selected':''}>Suspendu</option>
+            <option ${d.statut==='abandonne'?'selected':''}>Abandonné</option>
+            <option ${d.statut==='resolu'?'selected':''}>Résolu</option>
+          </select>
+        </span></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📝 Situation</div>
+        <div style="font-size:12px;line-height:1.7;color:var(--text2);background:var(--bg);border-radius:var(--radius);padding:10px;border-left:3px solid var(--orange);margin-bottom:8px">${d.situation}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px">${d.tags.map(t=>`<span class="badge badge-gray">${t}</span>`).join('')}</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div class="card-title">${exp.icon} Avancement — ${exp.label}</div>
+      <div class="pipe-steps">
+        ${exp.etapes.map((et,i)=>{
+          const isDone=d.etapes_done.includes(et.id);
+          const isActive=et.id===d.etape_active;
+          return `<div class="ps ${isDone?'ps-done':isActive?'ps-active':''}">
+            <div class="ps-dot">${isDone?'✓':isActive?'!':i+1}</div>
+            <div class="ps-lbl">${et.label}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+}
+
+function renderTimelineTab(d,exp){
+  const tl=exp.etapes.map((et,i)=>{
+    const isDone=d.etapes_done.includes(et.id);
+    const isActive=et.id===d.etape_active;
+    const dotCls=isDone?'dot-done':isActive?(d.sla<0?'dot-alert':'dot-active'):'dot-wait';
+    return `<div class="tl-item">
+      <div class="tl-dot ${dotCls}">${isDone?'✓':isActive?'!':i+1}</div>
+      <div class="tl-body">
+        <div class="tl-head">
+          <span class="tl-title">${et.label}</span>
+          ${isDone?'<span class="badge badge-green">✓ Fait</span>':isActive?`<span class="badge badge-orange">En cours</span>`:'<span class="badge badge-gray">À venir</span>'}
+        </div>
+        <div class="tl-date">${et.desc} · <em>${et.role==='client'?'👤 Action client':'👷 Action mandataire'}</em></div>
+        ${isActive&&d.sla<0?`<div class="alert alert-red" style="margin-top:6px;font-size:11px">⚠️ SLA dépassé de ${Math.abs(d.sla)} jours — Escalade recommandée</div>`:''}
+        ${isActive?`<div style="margin-top:6px;display:flex;gap:5px">
+          <button class="btn btn-primary btn-sm" onclick="advanceActiveStep()">✅ Valider</button>
+          <button class="btn btn-ghost btn-sm">📝 Note</button>
+        </div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('atab-timeline').innerHTML=`<div class="card"><div class="card-title">🗺️ Timeline détaillée</div><div class="tl">${tl}</div></div>`;
+}
+
+function renderAdminTab(d,exp){
+  document.getElementById('atab-admin').innerHTML=`
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">👥 Équipe affectée
+          <button class="btn btn-blue btn-sm" style="margin-left:auto" onclick="alert('Sélecteur mandataire')">+ Ajouter</button>
+        </div>
+        <div class="alert alert-blue" style="font-size:11px">Les pourcentages sont confidentiels. Les mandataires ne voient que leurs propres chiffres.</div>
+        <div class="rs">
+          <div class="rs-av" style="background:#FF8352">CG</div>
+          <div class="rs-info"><div class="rs-name">Clara Guérin</div><div class="rs-role">Ops Front</div></div>
+          <input type="number" class="pct-input" value="40" min="0" max="70"> %
+          <button class="btn btn-ghost btn-sm" onclick="alert('Changer mandataire')">↔</button>
+        </div>
+        <div class="rs">
+          <div class="rs-av" style="background:#378ADD">SL</div>
+          <div class="rs-info"><div class="rs-name">Sophie Leroux</div><div class="rs-role">B2B</div></div>
+          <input type="number" class="pct-input" value="10" min="0" max="70"> %
+          <button class="btn btn-ghost btn-sm" onclick="alert('Changer mandataire')">↔</button>
+        </div>
+        <div class="rs">
+          <div class="rs-av" style="background:#5FA694">AM</div>
+          <div class="rs-info"><div class="rs-name">Axel Martin</div><div class="rs-role">B2C</div></div>
+          <input type="number" class="pct-input" value="10" min="0" max="70"> %
+          <button class="btn btn-ghost btn-sm" onclick="alert('Changer mandataire')">↔</button>
+        </div>
+        <div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;font-size:12px;padding:8px 12px;background:var(--bg);border-radius:var(--radius)">
+          <span>Total alloué : <strong>60%</strong></span><span>Siège : <strong>30%</strong></span>
+          <button class="btn btn-green btn-sm">💾 Sauvegarder</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="card">
+          <div class="card-title">🏠 État du bien</div>
+          <div class="status-opt selected" onclick="setBienStatus('actif',this)">
+            <div class="status-dot" style="background:var(--green)"></div>
+            <div><div style="font-size:12px;font-weight:700;color:var(--green-dark)">Actif</div><div style="font-size:10px;color:var(--text3)">Dossier en traitement</div></div>
+          </div>
+          <div class="status-opt" onclick="setBienStatus('suspendu',this)">
+            <div class="status-dot" style="background:var(--yellow)"></div>
+            <div><div style="font-size:12px;font-weight:700">Suspendu</div><div style="font-size:10px;color:var(--text3)">En attente</div></div>
+          </div>
+          <div class="status-opt" onclick="setBienStatus('abandonne',this)">
+            <div class="status-dot" style="background:var(--red)"></div>
+            <div><div style="font-size:12px;font-weight:700">Abandonné</div><div style="font-size:10px;color:var(--text3)">Clôturé sans suite</div></div>
+          </div>
+          <div class="status-opt" onclick="setBienStatus('resolu',this)">
+            <div class="status-dot" style="background:var(--blue)"></div>
+            <div><div style="font-size:12px;font-weight:700">Résolu → LockImmo</div><div style="font-size:10px;color:var(--text3)">Valorisé avec succès</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">🔧 Prestataires</div>
+          <div style="font-size:12px;padding:8px;background:var(--bg);border-radius:var(--radius);border:1px solid var(--border);margin-bottom:6px">
+            <div style="font-weight:700">Chausson Isolation</div>
+            <div style="font-size:10px;color:var(--text3)">Isolation thermique · 14 200€ · <span class="badge badge-green">Devis validé</span></div>
+          </div>
+          <button class="btn btn-outline btn-sm" style="width:100%;justify-content:center" onclick="alert('Annuaire prestataires')">+ Ajouter un prestataire</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderFactTab(d,exp){
+  const totalCA=d.montant||0;
+  const reps=[
+    {lbl:'B2B',color:'#378ADD',pct:10},
+    {lbl:'B2C',color:'#5FA694',pct:10},
+    {lbl:'Front',color:'#FF8352',pct:40},
+    {lbl:'Mgmt',color:'#7F77DD',pct:10},
+    {lbl:'Siège',color:'#888780',pct:30},
+  ];
+  const bar=reps.map(r=>`<div class="rs-b" style="width:${r.pct}%;background:${r.color}"></div>`).join('');
+  const leg=reps.map(r=>`<span style="display:flex;align-items:center;gap:3px;font-size:10px;color:var(--text3)"><span style="width:8px;height:8px;border-radius:2px;background:${r.color};flex-shrink:0;display:inline-block"></span>${r.lbl} ${Math.round(1800*r.pct/100)}€</span>`).join('');
+  const rows=d.factures.map(f=>`<tr>
+    <td><span style="font-family:monospace;font-size:10px">${f.id}</span></td>
+    <td>${f.etape}</td>
+    <td style="font-weight:700">${f.montant.toLocaleString('fr-FR')} €</td>
+    <td><span class="badge ${f.statut==='payee'?'badge-green':'badge-yellow'}">${f.statut==='payee'?'✓ Payée':'À relancer'}</span></td>
+    <td>${f.date}</td>
+    <td><button class="btn btn-ghost btn-sm">📄</button></td>
+  </tr>`).join('')||`<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:14px">Aucune facture</td></tr>`;
+  document.getElementById('atab-facturation').innerHTML=`
+    <div class="grid3" style="margin-bottom:14px">
+      <div class="kpi"><div class="kpi-val" style="color:var(--green)">${d.factures.filter(f=>f.statut==='payee').reduce((s,f)=>s+f.montant,0).toLocaleString('fr-FR')}€</div><div class="kpi-lbl">Encaissé</div></div>
+      <div class="kpi"><div class="kpi-val" style="color:var(--orange)">${totalCA?(totalCA-d.factures.filter(f=>f.statut==='payee').reduce((s,f)=>s+f.montant,0)).toLocaleString('fr-FR')+'€':'—'}</div><div class="kpi-lbl">À facturer</div></div>
+      <div class="kpi"><div class="kpi-val">${totalCA?totalCA.toLocaleString('fr-FR')+'€':'—'}</div><div class="kpi-lbl">Total dossier</div></div>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-title">💰 Factures client</div>
+      <table><thead><tr><th>Ref</th><th>Étape</th><th>Montant</th><th>Statut</th><th>Date</th><th></th></tr></thead><tbody>${rows}</tbody></table>
+      <button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="alert('Nouvelle facture')">+ Émettre une facture</button>
+    </div>
+    ${d.factures.some(f=>f.statut==='payee')?`<div class="card">
+      <div class="card-title">📊 Répartition — Facture Étape 1 (1 800€ payée)</div>
+      <div class="rep-bar">${bar}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">${leg}</div>
+      <div style="margin-top:10px;display:flex;gap:5px">
+        <button class="btn btn-green btn-sm" onclick="alert('Virement confirmé')">💸 Confirmer virements</button>
+        <button class="btn btn-ghost btn-sm">📄 Export CSV</button>
+      </div>
+    </div>`:''}`;
+}
+
+function setBienStatus(s,el){
+  document.querySelectorAll('.status-opt').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function advanceActiveStep(){
+  if(!activeD)return;
+  const d=getDossier(activeD);if(!d)return;
+  const exp=getExpertise(d.expertise_id);
+  const idx=exp.etapes.findIndex(e=>e.id===d.etape_active);
+  if(!d.etapes_done.includes(d.etape_active)) d.etapes_done.push(d.etape_active);
+  if(idx<exp.etapes.length-1) d.etape_active=exp.etapes[idx+1].id;
+  selectDossier(activeD);
+}
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function openNewDossierModal(){openModal('newDossierModal')}
+
+filterList();
+if(DOSSIERS.length>0) selectDossier(DOSSIERS[0].id);
+</script>
+</body>
+</html>

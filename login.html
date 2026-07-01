@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Connexion — Timonia</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+body{min-height:100vh;display:flex;flex-direction:column;background:var(--bg)}
+.login-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+.login-card{background:var(--surf);border:1px solid var(--border);border-radius:20px;padding:36px;width:100%;max-width:420px;box-shadow:0 16px 48px var(--shadow);animation:modalUp .3s cubic-bezier(.22,1,.36,1)}
+@keyframes modalUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.login-logo{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:28px}
+.login-logo-mark{width:44px;height:44px;border-radius:12px;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:800}
+.login-logo-text{font-family:'Lora',serif;font-size:22px;color:var(--text)}
+.login-title{font-family:'Lora',serif;font-size:20px;text-align:center;color:var(--text);margin-bottom:4px}
+.login-sub{text-align:center;font-size:12px;color:var(--text3);margin-bottom:24px;font-weight:600}
+.login-error{background:var(--red-light);border:1px solid #F09595;border-radius:var(--radius);padding:9px 12px;font-size:12px;color:var(--red-dark);font-weight:700;margin-bottom:14px;text-align:center;display:none}
+.login-error.show{display:block}
+.btn-login{width:100%;background:var(--orange);color:#fff;border:none;border-radius:var(--radius);padding:12px;font-size:14px;font-weight:700;transition:all .18s;margin-top:4px}
+.btn-login:hover{opacity:.9;transform:translateY(-1px)}
+.login-back{display:block;text-align:center;margin-top:16px;font-size:12px;color:var(--text3);font-weight:600}
+.login-back:hover{color:var(--text)}
+.demo-section{margin-top:24px;border-top:1px solid var(--border);padding-top:20px}
+.demo-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:10px;text-align:center}
+.demo-group-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin:10px 0 6px}
+.demo-card{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .15s;margin-bottom:5px}
+.demo-card:hover{border-color:var(--green);background:var(--green-light)}
+.demo-card-left{display:flex;align-items:center;gap:9px}
+.demo-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0}
+.demo-name{font-size:12px;font-weight:700;color:var(--text)}
+.demo-sub{font-size:10px;color:var(--text3)}
+.demo-pass{text-align:center;font-size:11px;color:var(--text3);margin-top:10px;font-weight:600}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="nav-logo-mark">T</div>
+    <span>Timonia</span>
+  </div>
+  <div class="nav-right">
+    <a href="index.html" class="btn btn-ghost btn-sm">← Accueil</a>
+  </div>
+</nav>
+
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-mark">T</div>
+      <div class="login-logo-text">Timonia</div>
+    </div>
+    <div class="login-title">Connexion</div>
+    <div class="login-sub">Accédez à votre espace personnel</div>
+
+    <div class="login-error" id="loginError">Email ou mot de passe incorrect.</div>
+
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="emailInput" placeholder="email@exemple.fr" autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label>Mot de passe</label>
+      <input type="password" id="pwdInput" placeholder="••••••••••" autocomplete="current-password">
+    </div>
+
+    <button class="btn-login" onclick="doLogin()">Entrer dans mon espace →</button>
+    <a href="index.html" class="login-back">← Retour au site</a>
+
+    <div class="demo-section">
+      <div class="demo-title">Comptes de démonstration</div>
+      <div class="demo-group-label">👤 Espace client</div>
+      <div class="demo-card" onclick="fillDemo('client@demo.fr')">
+        <div class="demo-card-left">
+          <div class="demo-av" style="background:#378ADD">BC</div>
+          <div><div class="demo-name">Bernard Chaumont</div><div class="demo-sub">3 dossiers actifs</div></div>
+        </div>
+        <span class="badge badge-blue">Client</span>
+      </div>
+      <div class="demo-group-label">🏢 Espace interne</div>
+      <div class="demo-card" onclick="fillDemo('mandataire@demo.fr')">
+        <div class="demo-card-left">
+          <div class="demo-av" style="background:#FF8352">CG</div>
+          <div><div class="demo-name">Clara Guérin</div><div class="demo-sub">Ops Front · 5 dossiers</div></div>
+        </div>
+        <span class="badge badge-orange">Mandataire</span>
+      </div>
+      <div class="demo-card" onclick="fillDemo('admin@demo.fr')">
+        <div class="demo-card-left">
+          <div class="demo-av" style="background:#5FA694">ND</div>
+          <div><div class="demo-name">Nelly Duong</div><div class="demo-sub">Accès total</div></div>
+        </div>
+        <span class="badge badge-green">Admin</span>
+      </div>
+      <div class="demo-pass">Mot de passe : <strong>timonia2026</strong></div>
+    </div>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+function fillDemo(email){
+  document.getElementById('emailInput').value=email;
+  document.getElementById('pwdInput').value='timonia2026';
+}
+function doLogin(){
+  const email=document.getElementById('emailInput').value.trim();
+  const pwd=document.getElementById('pwdInput').value;
+  const err=document.getElementById('loginError');
+  err.classList.remove('show');
+  const u=authLogin(email,pwd);
+  if(!u){err.classList.add('show');document.getElementById('pwdInput').value='';return;}
+  if(u.role==='client') window.location.href='dashboard-client.html';
+  else if(u.role==='mandataire') window.location.href='dashboard-mandataire.html';
+  else if(u.role==='admin') window.location.href='dashboard-admin.html';
+}
+document.getElementById('pwdInput').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+document.getElementById('emailInput').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+</script>
+</body>
+</html>

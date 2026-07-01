@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Timonia — Débloquez votre bien immobilier</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+body{background:var(--bg);color:var(--text)}
+.hero{min-height:100vh;display:flex;flex-direction:column}
+.hero-body{flex:1;display:flex;align-items:center;justify-content:center;padding:60px 24px;text-align:center}
+.hero-inner{max-width:680px}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;background:var(--green-light);color:var(--green-dark);font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px;margin-bottom:24px}
+.hero-title{font-family:'Lora',serif;font-size:clamp(32px,5vw,54px);font-weight:600;color:var(--text);line-height:1.15;margin-bottom:18px}
+.hero-title em{color:var(--green);font-style:italic}
+.hero-sub{font-size:clamp(15px,2vw,18px);color:var(--text2);line-height:1.65;margin-bottom:36px;max-width:520px;margin-left:auto;margin-right:auto}
+.hero-ctas{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:48px}
+.hero-proof{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap}
+.proof-item{text-align:center}
+.proof-num{font-size:28px;font-weight:800;color:var(--green)}
+.proof-lbl{font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+
+.offres{background:var(--surf);padding:60px 24px;border-top:1px solid var(--border)}
+.section-title{font-family:'Lora',serif;font-size:28px;text-align:center;color:var(--text);margin-bottom:8px}
+.section-sub{text-align:center;color:var(--text2);font-size:14px;margin-bottom:40px}
+.offres-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;max-width:900px;margin:0 auto}
+.offre-card{border:1.5px solid var(--border);border-radius:var(--radius-lg);padding:20px;background:var(--surf2);transition:all .2s;cursor:pointer}
+.offre-card:hover{border-color:var(--green);transform:translateY(-2px);box-shadow:0 8px 24px var(--shadow)}
+.offre-icon{font-size:28px;margin-bottom:12px}
+.offre-label{font-size:14px;font-weight:700;margin-bottom:6px}
+.offre-desc{font-size:12px;color:var(--text2);line-height:1.55;margin-bottom:12px}
+.offre-prix{font-size:13px;font-weight:700;color:var(--green)}
+
+.process{padding:60px 24px;background:var(--bg)}
+.process-steps{display:flex;align-items:flex-start;gap:0;max-width:800px;margin:0 auto;overflow-x:auto}
+.proc-step{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;min-width:140px;position:relative}
+.proc-step:not(:last-child)::after{content:'';position:absolute;top:20px;left:60%;right:-40%;height:2px;background:var(--border)}
+.proc-num{width:40px;height:40px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;z-index:1;position:relative}
+.proc-lbl{font-size:12px;font-weight:700;color:var(--text)}
+.proc-sub{font-size:10px;color:var(--text3)}
+
+footer{background:var(--text);color:#fff;padding:24px;text-align:center;font-size:12px;opacity:.9}
+</style>
+</head>
+<body>
+<div class="hero">
+  <nav class="nav">
+    <div class="nav-logo">
+      <div class="nav-logo-mark">T</div>
+      <div>Timonia<span style="font-weight:400;color:var(--text2);font-size:12px;display:block;margin-top:-2px">by Home in Love</span></div>
+    </div>
+    <div class="nav-right">
+      <a href="login.html" class="btn btn-outline btn-sm">Connexion</a>
+      <a href="login.html" class="btn btn-primary btn-sm">Mon espace →</a>
+    </div>
+  </nav>
+
+  <div class="hero-body">
+    <div class="hero-inner">
+      <div class="hero-tag">🏠 Spécialiste situations immobilières complexes</div>
+      <h1 class="hero-title">Débloquez votre bien.<br><em>En 90 jours.</em></h1>
+      <p class="hero-sub">Impayés chroniques, DPE-F bloquant, succession conflictuelle, squat — Timonia transforme votre bien problématique en actif rentable.</p>
+      <div class="hero-ctas">
+        <a href="login.html" class="btn btn-primary" style="font-size:14px;padding:11px 22px">Démarrer mon dossier →</a>
+        <a href="#offres" class="btn btn-outline" style="font-size:14px;padding:11px 22px">Voir les expertises</a>
+      </div>
+      <div class="hero-proof">
+        <div class="proof-item"><div class="proof-num">90j</div><div class="proof-lbl">Délai moyen résolution</div></div>
+        <div style="width:1px;height:40px;background:var(--border)"></div>
+        <div class="proof-item"><div class="proof-num">+280€</div><div class="proof-lbl">Gain loyer moyen/mois</div></div>
+        <div style="width:1px;height:40px;background:var(--border)"></div>
+        <div class="proof-item"><div class="proof-num">100%</div><div class="proof-lbl">Transparence dossier</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="offres" id="offres">
+  <div class="section-title">Nos expertises</div>
+  <div class="section-sub">4 niveaux d'intervention, adaptés à votre situation</div>
+  <div class="offres-grid">
+    <div class="offre-card">
+      <div class="offre-icon">⚡</div>
+      <div class="offre-label">Conseil Flash</div>
+      <div class="offre-desc">Analyse express de votre situation et plan d'action immédiat par un expert dédié.</div>
+      <div class="offre-prix">150 € · 1 heure</div>
+    </div>
+    <div class="offre-card">
+      <div class="offre-icon">🔍</div>
+      <div class="offre-label">Audit</div>
+      <div class="offre-desc">État des lieux complet, diagnostic juridique, technique et financier avec rapport détaillé.</div>
+      <div class="offre-prix">1 800 € · 3 jours</div>
+    </div>
+    <div class="offre-card">
+      <div class="offre-icon">🔧</div>
+      <div class="offre-label">Mise en œuvre</div>
+      <div class="offre-desc">Pilotage complet de la résolution — procédures légales, travaux, démarches administratives.</div>
+      <div class="offre-prix">8% du montant travaux</div>
+    </div>
+    <div class="offre-card">
+      <div class="offre-icon">📈</div>
+      <div class="offre-label">Valorisation</div>
+      <div class="offre-desc">Mise en vente ou en location de votre bien au meilleur prix du marché.</div>
+      <div class="offre-prix">5% vente · 8% location</div>
+    </div>
+  </div>
+</div>
+
+<div class="process">
+  <div class="section-title" style="margin-bottom:8px">Comment ça marche</div>
+  <div class="section-sub">Un processus clair, piloté par des experts</div>
+  <div class="process-steps">
+    <div class="proc-step"><div class="proc-num">1</div><div class="proc-lbl">Diagnostic</div><div class="proc-sub">On analyse votre situation</div></div>
+    <div class="proc-step"><div class="proc-num">2</div><div class="proc-lbl">Plan d'action</div><div class="proc-sub">Un expert vous propose une solution</div></div>
+    <div class="proc-step"><div class="proc-num">3</div><div class="proc-lbl">Exécution</div><div class="proc-sub">Nous pilotons tout pour vous</div></div>
+    <div class="proc-step"><div class="proc-num">4</div><div class="proc-lbl">Valorisation</div><div class="proc-sub">Votre bien génère à nouveau</div></div>
+  </div>
+</div>
+
+<footer>© 2024 Timonia — by Home in Love · Lyon · <a href="login.html" style="color:var(--green)">Accéder à mon espace</a></footer>
+</body>
+</html>
