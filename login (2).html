@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mon espace — Timonia</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100vh;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:14px;color:#0B0B0B;background:#F5F5F3;display:flex;flex-direction:column}
+:root{--green:#5FA694;--gl:#E1F5EE;--gd:#0F6E56;--orange:#FF8352;--ol:#FAECE7;--od:#993C1D;--blue:#378ADD;--bl:#E6F1FB;--red:#E24B4A;--rl:#FCEBEB;--rd:#A32D2D;--border:#E1E0D9;--bg:#F5F5F3;--s1:#FFFFFF;--t1:#0B0B0B;--t2:#52514E;--t3:#898781;--r:10px}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:13px 24px;background:var(--s1);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--t1)}
+.logo-mark{width:30px;height:30px;border-radius:8px;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:800}
+.logo-name{font-size:14px;font-weight:700}
+.nav-link{font-size:12px;color:var(--t3);font-weight:600;text-decoration:none;padding:6px 12px;border-radius:var(--r);border:1px solid var(--border);transition:all .15s}
+.nav-link:hover{background:var(--bg);color:var(--t1)}
+.wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:20px;width:100%;max-width:400px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.07)}
+.card-top{background:linear-gradient(135deg,#0F6E56,#5FA694);padding:28px 28px 22px;text-align:center}
+.card-logo{width:50px;height:50px;border-radius:14px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;margin:0 auto 12px}
+.card-title{font-family:'Lora',serif;font-size:21px;color:#fff;margin-bottom:4px}
+.card-sub{font-size:12px;color:rgba(255,255,255,.75)}
+.card-body{padding:22px 26px 26px}
+.form-group{margin-bottom:13px}
+.form-group label{display:block;font-size:10px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.form-group input{width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:10px 12px;font-size:13px;color:var(--t1);background:var(--s1);font-family:inherit;outline:none;transition:border-color .15s}
+.form-group input:focus{border-color:var(--green)}
+.input-wrap{position:relative}
+.input-wrap input{padding-right:36px}
+.show-pwd{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:13px;color:var(--t3);padding:2px}
+.err-msg{background:var(--rl);border:1px solid #F09595;border-radius:var(--r);padding:9px 12px;font-size:12px;color:var(--rd);font-weight:700;margin-bottom:12px;text-align:center;display:none}
+.err-msg.show{display:block}
+.btn-submit{width:100%;background:var(--orange);color:#fff;border:none;border-radius:var(--r);padding:12px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .18s;margin-top:4px}
+.btn-submit:hover{opacity:.9;transform:translateY(-1px)}
+.form-links{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+.form-link{font-size:12px;color:var(--t3);font-weight:600;text-decoration:none}
+.form-link:hover{color:var(--t1)}
+.divider{display:flex;align-items:center;gap:10px;margin:18px 0;font-size:11px;color:var(--t3)}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.demo-card{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--r);cursor:pointer;transition:all .15s;margin-bottom:6px}
+.demo-card:hover{border-color:var(--green);background:var(--gl)}
+.demo-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0}
+.demo-name{font-size:12px;font-weight:700}
+.demo-role{font-size:10px;color:var(--t3)}
+footer{padding:14px;text-align:center;font-size:11px;color:var(--t3)}
+footer a{color:var(--green);text-decoration:none;font-weight:600}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="logo">
+    <div class="logo-mark">T</div>
+    <span class="logo-name">Timonia</span>
+  </a>
+  <a href="inscription.html" class="nav-link">Créer un compte →</a>
+</nav>
+<div class="wrap">
+  <div class="card">
+    <div class="card-top">
+      <div class="card-logo">🏠</div>
+      <div class="card-title">Mon espace client</div>
+      <div class="card-sub">Suivez votre dossier en temps réel</div>
+    </div>
+    <div class="card-body">
+      <div class="err-msg" id="err">Email ou mot de passe incorrect.</div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="email@exemple.fr" autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <div class="input-wrap">
+          <input type="password" id="pwd" placeholder="••••••••••" autocomplete="current-password">
+          <button class="show-pwd" onclick="togglePwd()">👁</button>
+        </div>
+      </div>
+      <button class="btn-submit" onclick="doLogin()">Se connecter →</button>
+      <div class="form-links">
+        <a href="inscription.html" class="form-link">Pas encore de compte ?</a>
+        <a href="forgot-password.html" class="form-link">Mot de passe oublié</a>
+      </div>
+      <div class="divider">compte de démonstration</div>
+      <div class="demo-card" onclick="fill('client@demo.fr')">
+        <div class="demo-av" style="background:#378ADD">BC</div>
+        <div><div class="demo-name">Bernard Chaumont</div><div class="demo-role">Client propriétaire · 3 dossiers actifs</div></div>
+      </div>
+      <div style="text-align:center;font-size:11px;color:var(--t3);margin-top:6px">Mot de passe : <strong>timonia2026</strong></div>
+    </div>
+  </div>
+</div>
+<footer>© 2024 Timonia · <a href="index.html">Retour au site</a> · <a href="login-partner.html">Espace partenaire</a></footer>
+<script>
+const USERS=[{email:'client@demo.fr',pwd:'timonia2026',role:'user',nom:'Bernard Chaumont',initials:'BC',color:'#378ADD'}];
+function fill(e){document.getElementById('email').value=e;document.getElementById('pwd').value='timonia2026';}
+function togglePwd(){var i=document.getElementById('pwd');i.type=i.type==='password'?'text':'password';}
+function doLogin(){
+  var e=document.getElementById('email').value.trim().toLowerCase();
+  var p=document.getElementById('pwd').value;
+  var err=document.getElementById('err');
+  err.classList.remove('show');
+  var u=USERS.find(function(x){return x.email===e&&x.pwd===p;});
+  if(!u){err.classList.add('show');document.getElementById('pwd').value='';return;}
+  if(u.role!=='user'){err.textContent='Ce compte est un compte partenaire. Connectez-vous sur partner.timonia.fr';err.classList.add('show');return;}
+  localStorage.setItem('tUser',JSON.stringify({email:e,nom:u.nom,initials:u.initials,color:u.color,role:u.role}));
+  window.location.href='dashboard-client.html';
+}
+document.addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+var s=localStorage.getItem('tUser');
+if(s){try{var u=JSON.parse(s);if(u.role==='user')window.location.href='dashboard-client.html';}catch(e){}}
+</script>
+</body>
+</html>
