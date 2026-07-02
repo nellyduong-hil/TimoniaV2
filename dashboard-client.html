@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mon espace — Timonia</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:13px;color:#0B0B0B;background:#F5F5F3}
+:root{
+  --green:#5FA694;--gl:#E1F5EE;--gd:#0F6E56;
+  --orange:#FF8352;--ol:#FAECE7;--od:#993C1D;
+  --blue:#378ADD;--bl:#E6F1FB;--bd:#185FA5;
+  --red:#E24B4A;--rl:#FCEBEB;--rd:#A32D2D;
+  --yellow:#EDA100;--yl:#FAEEDA;--yd:#854F0B;
+  --border:#E1E0D9;--s0:#FAFAF9;--s1:#FFFFFF;--bg:#F5F5F3;
+  --t1:#0B0B0B;--t2:#52514E;--t3:#898781;
+  --r:9px;--rl2:14px
+}
+
+/* ── NAV ── */
+.nav{display:flex;align-items:center;gap:10px;padding:11px 18px;background:var(--s1);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.logo{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:700}
+.logo-mark{width:28px;height:28px;border-radius:8px;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:800}
+.nav-r{margin-left:auto;display:flex;align-items:center;gap:8px}
+.nav-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff}
+.btn-logout{font-size:11px;color:var(--t3);font-weight:600;background:none;border:none;cursor:pointer;font-family:inherit;padding:4px 8px}.btn-logout:hover{color:var(--t1)}
+.btn-expert{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--r);border:1.5px solid var(--green);background:var(--gl);color:var(--gd);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s}.btn-expert:hover{background:var(--green);color:#fff}
+
+/* ── BANDEAUX ── */
+.bandeau-attente{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.bandeau-action{background:var(--orange);color:#fff;padding:11px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ba-btn{background:#fff;color:var(--od);border:none;border-radius:var(--r);padding:6px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}.ba-btn:hover{background:var(--ol)}
+
+/* ── LAYOUT ── */
+.layout{display:flex;height:calc(100vh - 54px);overflow:hidden}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* ── TABS ── */
+.tabs{display:flex;border-bottom:1px solid var(--border);background:var(--s1);padding:0 20px;flex-shrink:0}
+.tab{display:flex;align-items:center;gap:4px;padding:10px 14px;font-size:12px;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;color:var(--t3);white-space:nowrap;background:none;border-left:none;border-right:none;border-top:none;font-family:inherit;transition:all .15s}
+.tab:hover{color:var(--t1)}.tab.active{color:var(--t1);border-bottom-color:var(--green)}
+
+/* ── TAB WRAP ── */
+.tab-wrap{flex:1;overflow-y:auto}
+.tsec{display:none;padding:18px 20px}.tsec.active{display:block}
+
+/* ── DOSSIER LAYOUT ── */
+.dossier-inner{max-width:900px;margin:0 auto}
+
+/* Frise pleine largeur */
+.section-full{background:var(--s1);border:1px solid var(--border);border-radius:var(--rl2);padding:16px;margin-bottom:14px}
+
+/* Bandeau action pleine largeur */
+.action-banner{background:var(--ol);border:1.5px solid var(--orange);border-radius:var(--rl2);padding:15px 18px;margin-bottom:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+
+/* 2 colonnes */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:640px){.cols{grid-template-columns:1fr}}
+.col-left{display:flex;flex-direction:column;gap:12px}
+.col-right{display:flex;flex-direction:column;gap:12px}
+
+/* Journal pleine largeur */
+.journal-section{background:var(--s1);border:1px solid var(--border);border-radius:var(--rl2);padding:16px;margin-bottom:14px}
+
+/* ── CARDS ── */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--rl2);padding:15px}
+.ctitle{font-size:10px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:11px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+
+/* ── FRISE ── */
+.pipe-steps{display:flex;gap:0;padding:4px 0 6px;overflow-x:auto}
+.ps{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:80px;position:relative}
+.ps:not(:last-child)::after{content:'';position:absolute;top:13px;left:55%;right:-45%;height:2px;background:var(--border);z-index:0}
+.ps.done::after{background:var(--green)}
+.ps.active::after{background:linear-gradient(to right,var(--orange),var(--border))}
+.ps-dot{width:26px;height:26px;border-radius:50%;border:2px solid var(--border);background:var(--s1);display:flex;align-items:center;justify-content:center;font-size:10px;z-index:1;position:relative;font-weight:700;color:var(--t3)}
+.ps.done .ps-dot{background:var(--green);border-color:var(--green);color:#fff}
+.ps.active .ps-dot{background:var(--orange);border-color:var(--orange);color:#fff;box-shadow:0 0 0 3px var(--ol)}
+.ps-lbl{font-size:9px;text-align:center;font-weight:600;color:var(--t3);line-height:1.3}
+.ps.done .ps-lbl{color:var(--gd);font-weight:700}
+.ps.active .ps-lbl{color:var(--od);font-weight:700}
+.ps-dates{font-size:8px;text-align:center;color:var(--t3);line-height:1.4;margin-top:1px}
+.ps.done .ps-dates{color:var(--green)}
+.ps.active .ps-dates{color:var(--orange)}
+
+/* ── SITUATION EDIT ── */
+.sit-display{font-size:12px;line-height:1.75;color:var(--t2);background:var(--bg);border-radius:var(--r);padding:11px 13px;border-left:3px solid var(--orange);min-height:60px;cursor:pointer;transition:border-color .15s}.sit-display:hover{border-left-color:var(--green)}
+.sit-ta{width:100%;border:1.5px solid var(--orange);border-radius:var(--r);padding:10px 12px;font-size:12px;line-height:1.75;color:var(--t1);font-family:inherit;resize:vertical;outline:none;min-height:80px;background:var(--bg)}.sit-ta:focus{border-color:var(--green)}
+.edit-actions{display:flex;gap:6px;margin-top:6px}
+.edit-hint{font-size:10px;color:var(--t3);margin-top:5px;line-height:1.5}
+
+/* ── OBJECTIFS ── */
+.obj-list{display:flex;flex-direction:column;gap:6px}
+.obj-item{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border-radius:var(--r);background:var(--bg);border:1px solid var(--border)}
+.obj-num{width:20px;height:20px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0;margin-top:1px}
+.obj-inputs{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.obj-input-row{display:flex;align-items:center;gap:8px}
+.obj-input-num{width:20px;height:20px;border-radius:50%;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0}
+.obj-input-num.opt{background:var(--border);color:var(--t3)}
+.obj-input{flex:1;border:1.5px solid var(--border);border-radius:var(--r);padding:7px 10px;font-size:12px;font-family:inherit;outline:none;background:var(--s1);color:var(--t1);transition:border-color .15s}.obj-input:focus{border-color:var(--orange)}
+.obj-lock{display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--yl);border-radius:var(--r);font-size:11px;color:var(--yd);font-weight:600;margin-top:6px}
+
+/* ── AVOIR BOX ── */
+.avoir-box{background:var(--gl);border:1px solid #8ECFBE;border-radius:var(--r);padding:11px 13px;margin-top:10px}
+.avoir-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;font-size:11px;padding:4px 0;border-bottom:1px solid #8ECFBE}.avoir-row:last-child{border-bottom:none}
+.avoir-lbl{color:var(--gd);flex:1}
+.avoir-val{font-weight:700;color:var(--gd);text-align:right;flex-shrink:0}
+.avoir-val.future{color:var(--t3);font-weight:400}
+
+/* ── SUITE ── */
+.suite-item{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border-radius:var(--r);background:var(--bg);border:1px solid var(--border);margin-bottom:6px;font-size:12px;color:var(--t2)}
+.suite-dot{width:7px;height:7px;border-radius:50%;background:var(--border);flex-shrink:0;margin-top:4px}
+
+/* ── BUDGET ── */
+.budget-section{margin-bottom:10px}
+.budget-label{font-size:10px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;margin-top:10px}
+.budget-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px}
+.budget-row:last-child{border-bottom:none}
+.budget-row.total{font-weight:700;padding-top:8px;font-size:13px}
+.budget-row.avoir-line{color:var(--gd);font-style:italic;font-size:11px}
+.budget-row.net-line{color:var(--orange);font-weight:700}
+.budget-statut{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap;flex-shrink:0}
+.bs-paid{background:var(--gl);color:var(--gd)}
+.bs-pending{background:var(--yl);color:var(--yd)}
+.bs-future{background:var(--bg);color:var(--t3);border:1px solid var(--border)}
+.projection-box{background:var(--gl);border:1px solid #8ECFBE;border-radius:var(--r);padding:11px 13px;margin-top:10px;font-size:12px;color:var(--gd)}
+.proj-row{display:flex;justify-content:space-between;gap:8px;padding:3px 0;font-size:12px;color:var(--gd)}
+.proj-row strong{font-weight:700}
+
+/* ── ÉQUIPE ── */
+.equipe-item{display:flex;align-items:center;gap:9px;padding:8px 11px;border-radius:var(--r);background:var(--bg);border:1px solid var(--border);margin-bottom:6px}
+.eq-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0}
+
+/* ── JOURNAL ── */
+.journal{display:flex;flex-direction:column;gap:0}
+.j-item{display:flex;gap:11px;position:relative;padding-bottom:14px}
+.j-item:last-child{padding-bottom:0}
+.j-item:not(:last-child)::before{content:'';position:absolute;left:11px;top:24px;bottom:0;width:1.5px;background:var(--border)}
+.j-dot{width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;z-index:1}
+.j-done{background:var(--green);color:#fff}
+.j-active{background:var(--orange);color:#fff;box-shadow:0 0 0 3px var(--ol)}
+.j-wait{background:var(--bg);color:var(--t3);border:1.5px solid var(--border)}
+.j-body{flex:1;padding-top:1px}
+.j-date{font-size:10px;color:var(--t3);margin-bottom:2px;font-weight:600}
+.j-text{font-size:12px;line-height:1.55;color:var(--t2)}
+.j-text strong{color:var(--t1)}
+.j-timestamp{font-size:10px;color:var(--green);font-weight:700;margin-top:4px;display:flex;align-items:center;gap:4px}
+.j-estimated{font-size:10px;color:var(--orange);font-weight:600;margin-top:3px;display:flex;align-items:center;gap:4px}
+.j-action-btn{margin-top:9px;display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:var(--r);background:var(--orange);color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s}.j-action-btn:hover{opacity:.9}
+.j-validated{margin-top:6px;display:flex;align-items:center;gap:5px;font-size:11px;color:var(--green);font-weight:700;background:var(--gl);padding:5px 9px;border-radius:6px;width:fit-content}
+
+/* ── CARNET PHOTO ── */
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:4px}
+.photo-card{border-radius:var(--r);overflow:hidden;border:1px solid var(--border);background:var(--s1)}
+.photo-img{width:100%;height:130px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:32px;border-bottom:1px solid var(--border)}
+.photo-meta{padding:8px 10px}
+.photo-date{font-size:10px;color:var(--t3);margin-bottom:3px}
+.photo-caption{font-size:11px;color:var(--t2);line-height:1.4}
+.photo-empty{text-align:center;padding:40px 20px;color:var(--t3)}
+
+/* ── DOCUMENTS ── */
+.doc-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.doc-tab{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--s1);color:var(--t3);transition:all .15s;font-family:inherit}
+.doc-tab.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.doc-section{display:none}.doc-section.active{display:block}
+.doc-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r);background:var(--bg);border:1px solid var(--border);margin-bottom:7px}
+.doc-item.urgent{border-color:var(--orange);background:var(--ol)}
+.doc-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.doc-btn{display:inline-flex;align-items:center;gap:3px;padding:5px 10px;border-radius:6px;font-size:11px;font-weight:700;border:1.5px solid var(--border);background:var(--s1);color:var(--t1);cursor:pointer;white-space:nowrap;text-decoration:none;transition:all .15s;margin-left:auto;flex-shrink:0;font-family:inherit}.doc-btn:hover{background:var(--bg)}
+.doc-btn-p{background:var(--orange);color:#fff;border-color:var(--orange)}.doc-btn-p:hover{opacity:.9}
+
+/* ── MESSAGES ── */
+.msg-wrap{display:flex;flex-direction:column;gap:9px;margin-bottom:14px;max-height:340px;overflow-y:auto;padding:2px}
+.msg-bubble{border-radius:12px;padding:10px 13px;font-size:12px;max-width:78%;line-height:1.55}
+.msg-in{background:var(--bg);border:1px solid var(--border);border-radius:12px 12px 12px 0;align-self:flex-start}
+.msg-out{background:var(--bl);border-radius:12px 12px 0 12px;align-self:flex-end}
+.msg-meta{font-size:10px;font-weight:700;color:var(--t3);margin-bottom:3px}
+.msg-meta-out{color:var(--bd)}
+.msg-input-row{display:flex;gap:7px}
+.msg-input{flex:1;border:1.5px solid var(--border);border-radius:var(--r);padding:8px 11px;font-size:12px;font-family:inherit;outline:none;transition:border-color .15s}.msg-input:focus{border-color:var(--green)}
+.msg-send{background:var(--green);color:#fff;border:none;border-radius:var(--r);padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+
+/* ── BTNS ── */
+.btn{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:var(--r);font-size:11px;font-weight:700;border:1.5px solid var(--border);background:var(--s1);color:var(--t1);cursor:pointer;font-family:inherit;transition:all .15s}.btn:hover{background:var(--bg)}
+.btn-sm{padding:4px 9px;font-size:10px}
+.btn-g{background:var(--green);color:#fff;border-color:var(--green)}.btn-g:hover{opacity:.9}
+.btn-ghost{background:none;border:none;color:var(--t3);padding:3px 6px;font-size:11px;cursor:pointer;font-family:inherit;font-weight:600}.btn-ghost:hover{color:var(--t1)}
+
+/* ── MODAL ── */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:200;align-items:center;justify-content:center}
+.mo.open{display:flex}
+.mo-box{background:var(--s1);border-radius:18px;width:420px;max-width:94vw;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.18)}
+.mo-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:700}
+.mo-body{padding:18px}
+.mo-close{background:none;border:none;font-size:18px;cursor:pointer;color:var(--t3)}.mo-close:hover{color:var(--t1)}
+
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="logo"><div class="logo-mark">T</div>Timonia</div>
+  <div class="nav-r">
+    <button class="btn-expert" onclick="openModal('expertModal')">📞 Mon expert</button>
+    <div class="nav-av" id="navAv" style="background:#378ADD">BC</div>
+    <div style="display:flex;flex-direction:column">
+      <span style="font-size:12px;font-weight:700" id="navName">—</span>
+      <span style="font-size:10px;color:var(--t3)">Espace client</span>
+    </div>
+    <button class="btn-logout" onclick="doLogout()">Déconnexion</button>
+  </div>
+</nav>
+
+<div class="bandeau-attente" id="bandeau-attente" style="display:none">
+  <span style="font-size:22px">📞</span>
+  <div style="flex:1">
+    <div style="font-size:13px;font-weight:700;margin-bottom:1px">Votre expert vous rappelle sous 24 heures</div>
+    <div style="font-size:11px;opacity:.8">Premier échange gratuit de 15 minutes. En attendant, explorez votre espace.</div>
+  </div>
+</div>
+
+<div class="bandeau-action" id="bandeau-action" style="display:none">
+  <span style="font-size:16px">⚡</span>
+  <div style="flex:1;font-size:12px;font-weight:600" id="ba-text">—</div>
+  <button class="ba-btn" onclick="scrollToAction()">Voir et valider →</button>
+</div>
+
+<div class="layout">
+  <div class="main">
+    <div class="tabs">
+      <button class="tab active" id="tab-btn-dossier" onclick="openTab('dossier',this)">🏠 Mon dossier</button>
+      <button class="tab" id="tab-btn-photos" onclick="openTab('photos',this)">📷 Carnet de bord</button>
+      <button class="tab" id="tab-btn-documents" onclick="openTab('documents',this)">📁 Documents</button>
+      <button class="tab" id="tab-btn-messages" onclick="openTab('messages',this)">💬 Messages</button>
+    </div>
+
+    <div class="tab-wrap">
+
+      <!-- ═══ MON DOSSIER ═══ -->
+      <div class="tsec active" id="tsec-dossier">
+        <div class="dossier-inner">
+
+          <!-- 1. FRISE PLEINE LARGEUR -->
+          <div class="section-full">
+            <div class="ctitle" style="margin-bottom:8px">🗺️ Où en est votre projet</div>
+            <div class="pipe-steps" id="pipe-steps"></div>
+          </div>
+
+          <!-- 2. ACTION REQUISE (si applicable) -->
+          <div class="action-banner" id="action-banner" style="display:none">
+            <span style="font-size:22px">⚡</span>
+            <div style="flex:1">
+              <div style="font-size:12px;font-weight:800;color:var(--od);margin-bottom:3px">Votre action est requise</div>
+              <div style="font-size:12px;color:var(--od);line-height:1.5" id="action-text">—</div>
+            </div>
+            <button class="j-action-btn" id="action-main-btn" style="margin-top:0;flex-shrink:0">—</button>
+          </div>
+
+          <!-- 3. DEUX COLONNES -->
+          <div class="cols">
+
+            <!-- GAUCHE -->
+            <div class="col-left">
+
+              <!-- Situation -->
+              <div class="card">
+                <div class="ctitle">📋 Votre situation
+                  <button class="btn-ghost" id="sit-edit-btn" onclick="toggleSitEdit()">✏️ Modifier</button>
+                </div>
+                <div id="sit-display" class="sit-display" onclick="toggleSitEdit()"></div>
+                <div id="sit-edit" style="display:none;margin-top:8px">
+                  <textarea class="sit-ta" id="sit-ta" rows="5"></textarea>
+                  <div class="edit-hint">✏️ Votre équipe sera notifiée de toute modification.</div>
+                  <div class="edit-actions">
+                    <button class="btn btn-g btn-sm" onclick="saveSituation()">✓ Enregistrer</button>
+                    <button class="btn btn-sm btn-ghost" onclick="cancelSitEdit()">Annuler</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Objectifs -->
+              <div class="card">
+                <div class="ctitle">🎯 Vos objectifs
+                  <button class="btn-ghost" id="obj-edit-btn" onclick="toggleObjEdit()">✏️ Modifier</button>
+                </div>
+                <div id="obj-display" class="obj-list"></div>
+                <div id="obj-edit" style="display:none;margin-top:8px">
+                  <div class="obj-inputs">
+                    <div class="obj-input-row"><div class="obj-input-num">1</div><input type="text" class="obj-input" id="obj-1" placeholder="Votre premier objectif…"></div>
+                    <div class="obj-input-row"><div class="obj-input-num">2</div><input type="text" class="obj-input" id="obj-2" placeholder="Votre deuxième objectif…"></div>
+                    <div class="obj-input-row"><div class="obj-input-num opt">3</div><input type="text" class="obj-input" id="obj-3" placeholder="Troisième objectif (facultatif)"></div>
+                  </div>
+                  <div class="edit-hint">⚠️ Ces objectifs servent de référence à votre mission. Maximum 3.</div>
+                  <div class="edit-actions">
+                    <button class="btn btn-g btn-sm" onclick="saveObjectifs()">✓ Enregistrer</button>
+                    <button class="btn btn-sm btn-ghost" onclick="cancelObjEdit()">Annuler</button>
+                  </div>
+                </div>
+                <div id="obj-lock" style="display:none" class="obj-lock">🔒 Objectifs verrouillés après signature de l'audit. Contactez votre expert pour toute modification.</div>
+              </div>
+
+              <!-- Équipe -->
+              <div class="card">
+                <div class="ctitle">👥 Votre équipe Timonia</div>
+                <div id="equipe-list"></div>
+              </div>
+
+            </div><!-- /col-left -->
+
+            <!-- DROITE -->
+            <div class="col-right">
+
+              <!-- Ce qui vient ensuite -->
+              <div class="card" id="suite-card">
+                <div class="ctitle">⏭️ Ce qui vient ensuite</div>
+                <div id="suite-items"></div>
+              </div>
+
+              <!-- Budget & projection -->
+              <div class="card">
+                <div class="ctitle">💰 Budget & projection</div>
+                <div id="budget-content"></div>
+              </div>
+
+            </div><!-- /col-right -->
+          </div><!-- /cols -->
+
+          <!-- 4. JOURNAL PLEINE LARGEUR -->
+          <div class="journal-section">
+            <div class="ctitle" style="margin-bottom:12px">
+              📋 Journal de votre dossier
+              <span style="font-size:10px;font-weight:400;color:var(--t3);text-transform:none;letter-spacing:0">plus récent en haut</span>
+            </div>
+            <div class="journal" id="journal"></div>
+          </div>
+
+        </div>
+      </div><!-- /tsec-dossier -->
+
+      <!-- ═══ CARNET PHOTO ═══ -->
+      <div class="tsec" id="tsec-photos">
+        <div style="max-width:700px;margin:0 auto">
+          <div style="background:var(--bl);border:1px solid #85B7EB;border-radius:var(--r);padding:10px 13px;font-size:12px;color:var(--bd);margin-bottom:16px;font-weight:600;display:flex;align-items:center;gap:7px">
+            📷 Votre Ops Front publie des photos au fil du chantier. Vous les retrouvez ici en temps réel.
+          </div>
+          <div class="photo-grid" id="photo-grid"></div>
+        </div>
+      </div>
+
+      <!-- ═══ DOCUMENTS ═══ -->
+      <div class="tsec" id="tsec-documents">
+        <div style="max-width:700px;margin:0 auto">
+          <div style="background:var(--bl);border:1px solid #85B7EB;border-radius:var(--r);padding:10px 13px;font-size:12px;color:var(--bd);margin-bottom:14px;font-weight:600;display:flex;align-items:center;gap:7px">
+            📁 Vos documents sont stockés de façon sécurisée sur Google Drive.
+          </div>
+          <div class="doc-tabs">
+            <button class="doc-tab active" onclick="openDocTab('all',this)">Tous</button>
+            <button class="doc-tab" onclick="openDocTab('audit',this)">🔍 Audit</button>
+            <button class="doc-tab" onclick="openDocTab('travaux',this)">🔧 Travaux</button>
+            <button class="doc-tab" onclick="openDocTab('gestion',this)">📈 Gestion</button>
+          </div>
+          <div id="doc-all" class="doc-section active"></div>
+          <div id="doc-audit" class="doc-section"></div>
+          <div id="doc-travaux" class="doc-section"></div>
+          <div id="doc-gestion" class="doc-section"></div>
+          <div style="margin-top:14px;text-align:center">
+            <a href="https://drive.google.com" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:var(--r);background:var(--blue);color:#fff;font-size:12px;font-weight:700;text-decoration:none">
+              📁 Accéder à mon Google Drive →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ MESSAGES ═══ -->
+      <div class="tsec" id="tsec-messages">
+        <div style="max-width:640px;margin:0 auto">
+          <div class="card">
+            <div class="ctitle">💬 Conversation avec votre équipe</div>
+            <div class="msg-wrap" id="msg-wrap">
+              <div class="msg-bubble msg-in">
+                <div class="msg-meta">Clara Guérin · 18 mars 09h14</div>
+                Bonjour, les 3 devis des artisans sont disponibles dans Documents. Votre accord est nécessaire pour démarrer le chantier.
+              </div>
+              <div class="msg-bubble msg-out">
+                <div class="msg-meta msg-meta-out">Vous · 18 mars 11h42</div>
+                Bonjour Clara, j'ai des questions sur la garantie du devis Chausson Isolation.
+              </div>
+              <div class="msg-bubble msg-in">
+                <div class="msg-meta">Clara Guérin · 18 mars 14h30</div>
+                Chausson est certifié RGE avec garantie décennale. Je vous envoie le justificatif. Appel lundi matin ?
+              </div>
+              <div class="msg-bubble msg-out">
+                <div class="msg-meta msg-meta-out">Vous · 18 mars 15h05</div>
+                Lundi 9h me convient. Merci Clara.
+              </div>
+            </div>
+            <div class="msg-input-row">
+              <input type="text" class="msg-input" placeholder="Votre message…" id="msgInput" onkeydown="if(event.key==='Enter')sendMsg()">
+              <button class="msg-send" onclick="sendMsg()">Envoyer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tab-wrap -->
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- MODAL EXPERT -->
+<div class="mo" id="expertModal" onclick="if(event.target===this)closeModal('expertModal')">
+  <div class="mo-box">
+    <div class="mo-head">📞 Contacter votre expert<button class="mo-close" onclick="closeModal('expertModal')">✕</button></div>
+    <div class="mo-body">
+      <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg);border-radius:var(--r);margin-bottom:16px">
+        <div style="width:42px;height:42px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff">CG</div>
+        <div>
+          <div style="font-size:13px;font-weight:700">Clara Guérin</div>
+          <div style="font-size:11px;color:var(--t3)">Votre interlocutrice principale · Ops Front</div>
+          <div style="font-size:11px;color:var(--t3)">Disponible lun–ven 9h–18h</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-bottom:16px">
+        <div style="font-size:22px;font-weight:700;margin-bottom:4px">06 33 44 55 66</div>
+        <div style="font-size:12px;color:var(--t3)">cg@timonia.fr</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <a href="tel:0633445566" style="flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:10px;border-radius:var(--r);background:var(--green);color:#fff;font-size:13px;font-weight:700;text-decoration:none">📞 Appeler</a>
+        <button style="flex:1;padding:10px;border-radius:var(--r);border:1.5px solid var(--border);background:var(--s1);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit" onclick="openTab('messages',null);closeModal('expertModal')">💬 Message</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══ CONFIGS ══ */
+const CONFIGS = {
+  complexe:{
+    situation:'Votre bien du 14 rue Pasteur (Lyon 7e) est occupé par un locataire qui ne paie plus depuis 14 mois. La dette locative s\'élève à 8 400€. Le bien est classé DPE-F, ce qui bloque toute revalorisation du loyer.',
+    objectifs:['Récupérer le bien et régulariser la situation locative','Rénover jusqu\'au DPE-C grâce aux aides MaPrimeRénov','Remettre en location à 900€/mois (contre 620€ aujourd\'hui)'],
+    auditSigne:true,
+    steps:[
+      {label:'⚡ Conseil Flash',done:true,dateDebut:'8 jan. 2024',dateFin:'18 jan. 2024',duree:'10 jours'},
+      {label:'🔍 Audit',done:true,dateDebut:'19 jan. 2024',dateFin:'12 fév. 2024',duree:'24 jours'},
+      {label:'🔧 Mise en œuvre',done:false,active:true,dateDebut:'13 fév. 2024',dateEstimee:'~30 avr. 2024'},
+      {label:'📈 Valorisation',done:false,dateEstimee:'~juin 2024'},
+    ],
+    avoirs:[
+      {lbl:'✓ Conseil Flash payé',val:'100€ déduits de votre facture Audit',active:true},
+      {lbl:'✓ Audit terminé',val:'100€ déduits de votre prochaine facture',active:true},
+      {lbl:'○ Si vous continuez en Valorisation',val:'100€ déduits',active:false},
+    ],
+    suite:['Démarrage du chantier (isolation + pompe à chaleur)','Réception et validation des travaux','Mise en location à 900€/mois'],
+    action:{text:'Les devis de vos 3 artisans sont prêts. Votre accord est nécessaire pour démarrer le chantier.',btn:'✅ Je valide les devis',fn:'validerDevis()'},
+    journal:[
+      {date:'18 mars 2024',heure:null,text:'<strong>Votre accord est attendu</strong> sur les devis des 3 artisans sélectionnés. Les devis sont disponibles dans l\'onglet Documents.',type:'active',action:true,estimee:'Réponse souhaitée avant le 25 mars 2024'},
+      {date:'28 fév. 2024',heure:'10h15',text:'Nous avons sélectionné <strong>3 artisans qualifiés RGE</strong> pour vos travaux. Total devis : 24 800€.',type:'done',validated:false},
+      {date:'14 fév. 2024',heure:'09h30',text:'Vous avez <strong>validé le rapport d\'audit</strong> et signé la mission travaux.',type:'done',validated:true,validatedBy:'Vous'},
+      {date:'12 fév. 2024',heure:'14h32',text:'Votre <strong>rapport d\'audit complet</strong> vous a été remis. <em>Avoir de 100€ appliqué sur cette facture.</em>',type:'done',validated:false},
+      {date:'18 jan. 2024',heure:'09h15',text:'Vous avez <strong>signé la mission Timonia</strong> et démarré votre accompagnement.',type:'done',validated:true,validatedBy:'Vous'},
+      {date:'8 jan. 2024',heure:'11h00',text:'<strong>Premier échange de qualification</strong> avec Sophie Leroux — situation analysée, objectifs définis.',type:'done',validated:false},
+    ],
+    budget:{
+      sections:[
+        {title:'Honoraires Timonia',rows:[
+          {lbl:'Conseil Flash',montant:'150€',statut:'paid'},
+          {lbl:'Audit',montant:'2 000€',statut:'paid',avoir:'−100€ avoir Conseil Flash',net:'1 900€ facturé'},
+          {lbl:'Mise en œuvre',montant:'8% travaux',statut:'pending',avoir:'−100€ avoir Audit',net:'Net : 8% − 100€'},
+          {lbl:'Valorisation',montant:'5% ou 8%',statut:'future',avoir:'−100€ avoir Mise en œuvre',net:'Net : taux − 100€'},
+        ]},
+        {title:'Travaux (paiement direct artisans)',rows:[
+          {lbl:'Chausson Isolation',montant:'14 200€',statut:'pending'},
+          {lbl:'Électricité Morel',montant:'8 400€',statut:'pending'},
+          {lbl:'Menuiseries Bordet',montant:'2 200€',statut:'pending'},
+          {lbl:'Total travaux',montant:'24 800€',statut:'total'},
+        ]},
+      ],
+      projection:{loyer_actuel:'620€/mois',loyer_cible:'900€/mois',gain:'+280€/mois',roi:'6,2 ans',aide:'~9 000€ MaPrimeRénov estimés'}
+    },
+    docs:[
+      {name:'Devis prestataires × 3',meta:'Votre validation requise',icon:'📋',phase:'travaux',urgent:true},
+      {name:'Rapport d\'audit complet',meta:'Validé · 12 fév. 2024',icon:'📄',phase:'audit'},
+      {name:'Facture Audit — 1 900€',meta:'Payée · 15 fév. · dont −100€ avoir',icon:'🧾',phase:'audit'},
+      {name:'Facture Conseil Flash — 150€',meta:'Payée · 18 jan. 2024',icon:'🧾',phase:'audit'},
+      {name:'Commandement de payer',meta:'Document légal · déc. 2023',icon:'⚖️',phase:'audit'},
+    ],
+    docs_envoyer:[
+      {name:'Photos état des lieux actuel',meta:'Requis avant démarrage chantier',icon:'📷',urgent:true},
+    ],
+    equipe:[
+      {initials:'CG',color:'#FF8352',name:'Clara Guérin',role:'Ops Front — Terrain & chantier',phone:'06 33 44 55 66',main:true},
+      {initials:'SL',color:'#378ADD',name:'Sophie Leroux',role:'Commercial B2B',phone:'06 11 22 33 44',main:false},
+      {initials:'RP',color:'#7F77DD',name:'Rémi Payet',role:'Ops Back — Juridique',phone:'06 44 55 66 77',main:false},
+    ],
+    photos:[
+      {date:'28 fév. 2024',caption:'État initial du logement avant travaux — séjour',emoji:'🏚️'},
+      {date:'5 mars 2024',caption:'Dépose des anciennes fenêtres — façade rue',emoji:'🔨'},
+      {date:'12 mars 2024',caption:'Pose de l\'isolation par l\'extérieur — travée nord',emoji:'🧱'},
+      {date:'18 mars 2024',caption:'Installation PAC — local technique en cours',emoji:'⚙️'},
+    ]
+  },
+  location:{
+    situation:'Vous êtes à la recherche d\'un logement à Lyon et souhaitez être accompagné pour trouver le bien correspondant à vos critères et sécuriser votre candidature.',
+    objectifs:['Trouver un T2 ou T3 dans le 7e ou 8e arrondissement de Lyon','Budget maximum 850€/mois charges comprises','Emménager avant septembre 2024'],
+    auditSigne:false,
+    steps:[
+      {label:'⚡ Conseil Flash',done:true,dateDebut:'10 mars 2024',dateFin:'10 mars 2024',duree:'1 jour'},
+      {label:'🔍 Diagnostic besoin',done:true,dateDebut:'12 mars 2024',dateFin:'15 mars 2024',duree:'3 jours'},
+      {label:'🏠 Chasse active',done:false,active:true,dateDebut:'18 mars 2024',dateEstimee:'~juin 2024'},
+      {label:'🔑 Bail signé',done:false,dateEstimee:'~sept. 2024'},
+    ],
+    avoirs:[
+      {lbl:'✓ Conseil Flash payé',val:'100€ déduits de votre prochaine facture',active:true},
+      {lbl:'○ Si mission complète',val:'100€ supplémentaires déduits',active:false},
+    ],
+    suite:['Sélection des annonces correspondantes','Organisation des visites','Soumission de votre dossier','Signature du bail'],
+    action:null,
+    journal:[
+      {date:'20 mars 2024',heure:null,text:'<strong>Chasse locative en cours</strong> — Votre expert analyse les annonces et prépare une sélection personnalisée.',type:'active',action:false,estimee:'Premières annonces attendues semaine du 25 mars'},
+      {date:'15 mars 2024',heure:'14h00',text:'Votre <strong>dossier de candidature</strong> a été préparé et optimisé.',type:'done',validated:false},
+      {date:'10 mars 2024',heure:'10h30',text:'<strong>Conseil Flash effectué</strong> — Critères définis, budget validé, zones ciblées.',type:'done',validated:true,validatedBy:'Vous'},
+    ],
+    budget:{
+      sections:[
+        {title:'Honoraires Timonia',rows:[
+          {lbl:'Conseil Flash',montant:'150€',statut:'paid'},
+          {lbl:'Mission chasse locative',montant:'2 220€ TTC',statut:'pending',avoir:'−100€ avoir Conseil Flash',net:'2 120€ TTC net'},
+        ]},
+        {title:'Votre budget locatif',rows:[
+          {lbl:'Loyer maximum',montant:'850€/mois',statut:'info'},
+          {lbl:'Charges estimées',montant:'~100€/mois',statut:'info'},
+          {lbl:'Dépôt de garantie',montant:'~1 700€',statut:'info'},
+          {lbl:'Frais d\'agence Timonia',montant:'0€',statut:'info'},
+        ]},
+      ],
+      projection:null
+    },
+    docs:[
+      {name:'Synthèse de vos critères',meta:'Validée · 15 mars 2024',icon:'📋',phase:'audit'},
+    ],
+    docs_envoyer:[
+      {name:'Bulletins de salaire × 3',meta:'Requis pour votre dossier',icon:'📑',urgent:true},
+    ],
+    equipe:[{initials:'AM',color:'#5FA694',name:'Axel Martin',role:'Commercial B2C — Chasse locative',phone:'06 22 33 44 55',main:true}],
+    photos:[]
+  },
+  investissement:{
+    situation:'Vous souhaitez investir dans l\'immobilier à Lyon avec un objectif de rendement locatif. Votre expert prépare une analyse du marché et une sélection de biens ciblés.',
+    objectifs:['Acquérir un bien entre 150 000 et 200 000€','Viser un rendement locatif de 6% minimum','Secteur Lyon 7e, 8e ou Villeurbanne'],
+    auditSigne:false,
+    steps:[
+      {label:'⚡ Conseil Flash',done:true,dateDebut:'18 mars 2024',dateFin:'18 mars 2024',duree:'1 jour'},
+      {label:'🔍 Diagnostic projet',done:false,active:true,dateDebut:'20 mars 2024',dateEstimee:'~fin mars 2024'},
+      {label:'🏠 Chasse active',done:false,dateEstimee:'~avr. 2024'},
+      {label:'📝 Acte signé',done:false,dateEstimee:'~été 2024'},
+    ],
+    avoirs:[
+      {lbl:'✓ Conseil Flash payé',val:'100€ déduits de votre prochaine facture',active:true},
+      {lbl:'○ Si mission complète',val:'100€ supplémentaires déduits',active:false},
+    ],
+    suite:['Analyse du marché lyonnais ciblé','Sélection des biens à fort potentiel','Visites et négociation','Compromis puis acte authentique'],
+    action:null,
+    journal:[
+      {date:'22 mars 2024',heure:null,text:'<strong>Analyse du marché en cours</strong> — Votre expert étudie les opportunités correspondant à vos critères.',type:'active',action:false,estimee:'Résultats attendus avant le 31 mars 2024'},
+      {date:'18 mars 2024',heure:'11h00',text:'<strong>Conseil Flash effectué</strong> — Projet d\'investissement qualifié, objectifs formalisés.',type:'done',validated:true,validatedBy:'Vous'},
+    ],
+    budget:{
+      sections:[
+        {title:'Honoraires Timonia',rows:[
+          {lbl:'Conseil Flash',montant:'150€',statut:'paid'},
+          {lbl:'Mission chasse achat',montant:'8 000€',statut:'future',avoir:'−100€ avoir Conseil Flash',net:'7 900€ net'},
+        ]},
+        {title:'Budget d\'acquisition',rows:[
+          {lbl:'Budget bien',montant:'150 000 – 200 000€',statut:'info'},
+          {lbl:'Frais de notaire (~8%)',montant:'~13 000€',statut:'info'},
+          {lbl:'Budget travaux estimé',montant:'à définir',statut:'info'},
+        ]},
+      ],
+      projection:{loyer_actuel:'—',loyer_cible:'~900€/mois estimé',gain:'Rendement cible 6%',roi:'~16 ans',aide:'Déduction fiscale possible selon régime'}
+    },
+    docs:[],
+    docs_envoyer:[{name:'Accord de principe bancaire',meta:'Ou justificatif de financement',icon:'🏦',urgent:true}],
+    equipe:[{initials:'SL',color:'#378ADD',name:'Sophie Leroux',role:'Commercial B2B — Investissement',phone:'06 11 22 33 44',main:true}],
+    photos:[]
+  }
+};
+
+/* ══ STATE ══ */
+let situation='', objectifs=[], sitEditing=false, objEditing=false;
+
+/* ══ AUTH ══ */
+function authGet(){try{return JSON.parse(localStorage.getItem('tUser'));}catch{return null;}}
+function doLogout(){localStorage.removeItem('tUser');window.location.href='login.html';}
+
+/* ══ INIT ══ */
+const u=authGet()||{prenom:'Bernard',projet:'complexe',statut:'actif'};
+const prenom=u.prenom||'Bernard';
+const projet=u.projet||'complexe';
+const cfg=CONFIGS[projet]||CONFIGS.complexe;
+const enAttenteAppel=u.statut==='en_attente_appel';
+
+situation=localStorage.getItem('sit_'+projet)||cfg.situation;
+const savedObj=localStorage.getItem('obj_'+projet);
+objectifs=savedObj?JSON.parse(savedObj):[...cfg.objectifs];
+
+document.getElementById('navAv').textContent=(prenom[0]||'B').toUpperCase();
+document.getElementById('navName').textContent=prenom;
+
+if(enAttenteAppel) document.getElementById('bandeau-attente').style.display='flex';
+if(cfg.action){
+  document.getElementById('bandeau-action').style.display='flex';
+  document.getElementById('ba-text').textContent=cfg.action.text;
+  document.getElementById('action-banner').style.display='flex';
+  document.getElementById('action-text').textContent=cfg.action.text;
+  const btn=document.getElementById('action-main-btn');
+  btn.textContent=cfg.action.btn;
+  btn.onclick=new Function(cfg.action.fn.replace('()',''));
+}
+
+/* ── SITUATION ── */
+function renderSit(){
+  document.getElementById('sit-display').textContent=situation;
+  document.getElementById('sit-ta').value=situation;
+}
+function toggleSitEdit(){
+  sitEditing=!sitEditing;
+  document.getElementById('sit-display').style.display=sitEditing?'none':'block';
+  document.getElementById('sit-edit').style.display=sitEditing?'block':'none';
+  document.getElementById('sit-edit-btn').textContent=sitEditing?'':'✏️ Modifier';
+  if(sitEditing) document.getElementById('sit-ta').focus();
+}
+function saveSituation(){
+  const v=document.getElementById('sit-ta').value.trim();
+  if(!v) return;
+  situation=v;
+  localStorage.setItem('sit_'+projet,v);
+  renderSit();cancelSitEdit();
+}
+function cancelSitEdit(){sitEditing=false;document.getElementById('sit-display').style.display='block';document.getElementById('sit-edit').style.display='none';document.getElementById('sit-edit-btn').textContent='✏️ Modifier';}
+
+/* ── OBJECTIFS ── */
+function renderObj(){
+  const list=document.getElementById('obj-display');
+  list.innerHTML='';
+  objectifs.filter(o=>o&&o.trim()).forEach((o,i)=>{
+    const div=document.createElement('div');div.className='obj-item';
+    div.innerHTML=`<div class="obj-num">${i+1}</div><div style="font-size:12px;line-height:1.5;color:var(--t2);flex:1">${o}</div>`;
+    list.appendChild(div);
+  });
+  document.getElementById('obj-lock').style.display=cfg.auditSigne?'flex':'none';
+  document.getElementById('obj-edit-btn').style.display=cfg.auditSigne?'none':'inline-flex';
+  for(let i=1;i<=3;i++){const inp=document.getElementById('obj-'+i);if(inp)inp.value=objectifs[i-1]||'';}
+}
+function toggleObjEdit(){
+  if(cfg.auditSigne){alert('Objectifs verrouillés après signature de l\'audit. Contactez votre expert.');return;}
+  objEditing=!objEditing;
+  document.getElementById('obj-display').style.display=objEditing?'none':'flex';
+  document.getElementById('obj-edit').style.display=objEditing?'block':'none';
+  document.getElementById('obj-edit-btn').textContent=objEditing?'':'✏️ Modifier';
+  if(objEditing) document.getElementById('obj-1').focus();
+}
+function saveObjectifs(){
+  const newObj=[];
+  for(let i=1;i<=3;i++){const v=(document.getElementById('obj-'+i).value||'').trim();if(v)newObj.push(v);}
+  if(!newObj.length){alert('Saisissez au moins un objectif.');return;}
+  objectifs=newObj;
+  localStorage.setItem('obj_'+projet,JSON.stringify(objectifs));
+  renderObj();cancelObjEdit();
+}
+function cancelObjEdit(){objEditing=false;document.getElementById('obj-display').style.display='flex';document.getElementById('obj-edit').style.display='none';document.getElementById('obj-edit-btn').textContent='✏️ Modifier';}
+
+/* ── FRISE ── */
+function renderSteps(){
+  const el=document.getElementById('pipe-steps');
+  cfg.steps.forEach((s,i)=>{
+    const div=document.createElement('div');
+    div.className='ps '+(s.done?'done':s.active?'active':'');
+    let dates='';
+    if(s.done) dates=`${s.dateDebut} → ${s.dateFin}<br>${s.duree}`;
+    else if(s.active) dates=`Depuis ${s.dateDebut}<br>Estimé : ${s.dateEstimee||'—'}`;
+    else if(s.dateEstimee) dates=`Estimé : ${s.dateEstimee}`;
+    div.innerHTML=`
+      <div class="ps-dot">${s.done?'✓':s.active?'!':i+1}</div>
+      <div class="ps-lbl">${s.label}</div>
+      ${dates?`<div class="ps-dates">${dates}</div>`:''}`;
+    el.appendChild(div);
+  });
+}
+
+/* ── SUITE ── */
+function renderSuite(){
+  const el=document.getElementById('suite-items');
+  if(!cfg.suite||!cfg.suite.length){document.getElementById('suite-card').style.display='none';return;}
+  cfg.suite.forEach(s=>{
+    const div=document.createElement('div');div.className='suite-item';
+    div.innerHTML=`<div class="suite-dot"></div><span>${s}</span>`;
+    el.appendChild(div);
+  });
+}
+
+/* ── BUDGET ── */
+function renderBudget(){
+  const el=document.getElementById('budget-content');
+  const b=cfg.budget;
+  let html='';
+  b.sections.forEach(sec=>{
+    html+=`<div class="budget-label">${sec.title}</div>`;
+    sec.rows.forEach(row=>{
+      const cls=row.statut==='total'?'budget-row total':'budget-row';
+      const badge=row.statut==='paid'?'<span class="budget-statut bs-paid">✓ Payé</span>':row.statut==='pending'?'<span class="budget-statut bs-pending">⏳ En cours</span>':row.statut==='future'?'<span class="budget-statut bs-future">À venir</span>':'';
+      html+=`<div class="${cls}"><span>${row.lbl}</span><div style="display:flex;align-items:center;gap:6px"><span style="font-weight:600">${row.montant}</span>${badge}</div></div>`;
+      if(row.avoir) html+=`<div class="budget-row avoir-line"><span style="padding-left:10px">↳ ${row.avoir}</span><span style="color:var(--green);font-weight:700">${row.net}</span></div>`;
+    });
+  });
+  if(b.projection){
+    html+=`<div class="projection-box">
+      <div style="font-size:11px;font-weight:800;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">📈 Projection après rénovation</div>
+      <div class="proj-row"><span>Loyer actuel</span><strong>${b.projection.loyer_actuel}</strong></div>
+      <div class="proj-row"><span>Loyer cible</span><strong>${b.projection.loyer_cible}</strong></div>
+      <div class="proj-row"><span>Gain mensuel</span><strong>${b.projection.gain}</strong></div>
+      <div class="proj-row"><span>Retour sur investissement</span><strong>${b.projection.roi}</strong></div>
+      <div class="proj-row"><span>Aides publiques</span><strong>${b.projection.aide}</strong></div>
+    </div>`;
+  }
+  // Avoirs
+  html+=`<div class="avoir-box" style="margin-top:10px"><div style="font-size:10px;font-weight:800;color:var(--gd);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">💰 Vos avantages fidélité</div>`;
+  cfg.avoirs.forEach(a=>{
+    html+=`<div class="avoir-row"><span class="avoir-lbl">${a.lbl}</span><span class="avoir-val ${a.active?'':'future'}">${a.val}</span></div>`;
+  });
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+/* ── JOURNAL ── */
+function renderJournal(){
+  const el=document.getElementById('journal');
+  cfg.journal.forEach((j,idx)=>{
+    const div=document.createElement('div');div.className='j-item';
+    if(idx===cfg.journal.length-1) div.style.paddingBottom='0';
+    const dotCls=j.type==='done'?'j-done':j.type==='active'?'j-active':'j-wait';
+    const dotTxt=j.type==='done'?'✓':j.type==='active'?'⚡':'○';
+    let extra='';
+    if(j.type==='active'&&j.estimee) extra+=`<div class="j-estimated">⏱️ ${j.estimee}</div>`;
+    if(j.type==='active'&&j.action) extra+=`<button class="j-action-btn" onclick="validerDevis()">✅ Je valide les devis</button>`;
+    if(j.validated) extra+=`<div class="j-validated">✓ Validé par ${j.validatedBy} · ${j.date}${j.heure?' à '+j.heure:''}</div>`;
+    else if(j.heure&&j.type==='done') extra+=`<div style="font-size:10px;color:var(--t3);margin-top:3px">🕐 ${j.date} à ${j.heure}</div>`;
+    div.innerHTML=`
+      <div class="j-dot ${dotCls}">${dotTxt}</div>
+      <div class="j-body">
+        <div class="j-date">${j.date}${j.heure&&j.type!=='done'?' à '+j.heure:''}</div>
+        <div class="j-text">${j.text}</div>
+        ${extra}
+      </div>`;
+    el.appendChild(div);
+  });
+}
+
+/* ── ÉQUIPE ── */
+function renderEquipe(){
+  const el=document.getElementById('equipe-list');
+  cfg.equipe.forEach(e=>{
+    const div=document.createElement('div');div.className='equipe-item';
+    div.innerHTML=`
+      <div class="eq-av" style="background:${e.color}">${e.initials}</div>
+      <div style="flex:1">
+        <div style="font-size:12px;font-weight:700">${e.name}${e.main?' <span style="font-size:10px;color:var(--od);font-weight:700">← votre interlocuteur·rice</span>':''}</div>
+        <div style="font-size:10px;color:var(--t3)">${e.role}</div>
+      </div>
+      <a href="tel:${e.phone.replace(/\s/g,'')}" style="font-size:11px;font-weight:700;color:var(--blue);text-decoration:none;white-space:nowrap">${e.phone}</a>`;
+    el.appendChild(div);
+  });
+}
+
+/* ── PHOTOS ── */
+function renderPhotos(){
+  const el=document.getElementById('photo-grid');
+  if(!cfg.photos||!cfg.photos.length){
+    el.innerHTML='<div class="photo-empty"><div style="font-size:40px;margin-bottom:8px">📷</div><div style="font-size:13px;font-weight:600;margin-bottom:4px">Pas encore de photos</div><div style="font-size:12px">Votre expert publiera des photos dès le début du chantier.</div></div>';
+    return;
+  }
+  cfg.photos.forEach(p=>{
+    const div=document.createElement('div');div.className='photo-card';
+    div.innerHTML=`
+      <div class="photo-img">${p.emoji}</div>
+      <div class="photo-meta">
+        <div class="photo-date">${p.date}</div>
+        <div class="photo-caption">${p.caption}</div>
+      </div>`;
+    el.appendChild(div);
+  });
+}
+
+/* ── DOCUMENTS ── */
+function renderDocs(){
+  const all=document.getElementById('doc-all');
+  const phases={audit:document.getElementById('doc-audit'),travaux:document.getElementById('doc-travaux'),gestion:document.getElementById('doc-gestion')};
+  function makeDoc(d,container,urgent){
+    const div=document.createElement('div');
+    div.className='doc-item'+(urgent?' urgent':'');
+    div.innerHTML=`
+      <div class="doc-icon" style="background:${urgent?'var(--ol)':'var(--gl)'}">${d.icon}</div>
+      <div style="flex:1"><div style="font-size:12px;font-weight:700;${urgent?'color:var(--od)':''}">${d.name}</div><div style="font-size:10px;color:var(--t3)">${d.meta}</div></div>
+      <a href="https://drive.google.com" target="_blank" class="doc-btn${urgent?' doc-btn-p':''}">${urgent?'Consulter →':'Ouvrir →'}</a>`;
+    container.appendChild(div.cloneNode(true));
+    if(d.phase&&phases[d.phase]) phases[d.phase].appendChild(div);
+  }
+  if(cfg.docs_envoyer&&cfg.docs_envoyer.length){
+    const h=document.createElement('div');h.style.cssText='font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px';h.textContent='⚡ À nous envoyer';all.appendChild(h);
+    cfg.docs_envoyer.forEach(d=>makeDoc(d,all,true));
+  }
+  if(cfg.docs&&cfg.docs.length){
+    const h=document.createElement('div');h.style.cssText='font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin:10px 0 8px';h.textContent='Vos documents';all.appendChild(h);
+    cfg.docs.forEach(d=>makeDoc(d,all,d.urgent));
+  }
+  if(!all.innerHTML) all.innerHTML='<div style="text-align:center;padding:24px;color:var(--t3);font-size:12px">Aucun document pour le moment.</div>';
+  Object.values(phases).forEach(el=>{if(!el.innerHTML) el.innerHTML='<div style="text-align:center;padding:24px;color:var(--t3);font-size:12px">Aucun document dans cette section.</div>';});
+}
+
+/* ── TABS ── */
+function openTab(id,btn){
+  document.querySelectorAll('.tsec').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tsec-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  else{const b=document.getElementById('tab-btn-'+id);if(b)b.classList.add('active');}
+}
+function openDocTab(id,btn){
+  document.querySelectorAll('.doc-section').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.doc-tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('doc-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ── MODAL ── */
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+
+/* ── ACTIONS ── */
+function validerDevis(){
+  const now=new Date();
+  const ts=now.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})+' à '+now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  alert('✅ Validation enregistrée !\nHorodatage : '+ts+'\n\nVotre expert Clara Guérin a été notifié. Le chantier peut démarrer.');
+  document.getElementById('bandeau-action').style.display='none';
+  document.getElementById('action-banner').style.display='none';
+}
+function scrollToAction(){
+  openTab('dossier',document.getElementById('tab-btn-dossier'));
+  setTimeout(()=>{const el=document.getElementById('action-banner');if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},100);
+}
+
+/* ── MESSAGES ── */
+function sendMsg(){
+  const inp=document.getElementById('msgInput');
+  const txt=inp.value.trim();if(!txt)return;
+  const wrap=document.getElementById('msg-wrap');
+  const div=document.createElement('div');div.className='msg-bubble msg-out';
+  div.innerHTML=`<div class="msg-meta msg-meta-out">Vous · maintenant</div>${txt}`;
+  wrap.appendChild(div);inp.value='';wrap.scrollTop=wrap.scrollHeight;
+}
+
+/* ── BOOT ── */
+renderSit();renderObj();renderSteps();renderSuite();renderBudget();renderJournal();renderEquipe();renderPhotos();renderDocs();
+</script>
+</body>
+</html>
