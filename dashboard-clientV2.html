@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mon espace — Timonia (aligné v2.1)</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<script src="timonia-config.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:13px;color:#0B0B0B;background:#F5F5F3}
+:root{
+  --green:#5FA694;--gl:#E1F5EE;--gd:#0F6E56;--orange:#FF8352;--ol:#FAECE7;--od:#993C1D;
+  --blue:#378ADD;--bl:#E6F1FB;--bd:#185FA5;--red:#E24B4A;--rl:#FCEBEB;--rd:#A32D2D;
+  --yellow:#EDA100;--yl:#FAEEDA;--yd:#854F0B;--border:#E1E0D9;--s0:#FAFAF9;--s1:#FFFFFF;--bg:#F5F5F3;
+  --t1:#0B0B0B;--t2:#52514E;--t3:#898781;--r:9px;--rl2:14px
+}
+.nav{display:flex;align-items:center;gap:10px;padding:11px 18px;background:var(--s1);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.logo{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:700}
+.logo-mark{width:28px;height:28px;border-radius:8px;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:800}
+.nav-r{margin-left:auto;display:flex;align-items:center;gap:10px}
+.nav-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff}
+.btn-expert{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--r);border:1.5px solid var(--green);background:var(--gl);color:var(--gd);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-expert:hover{background:var(--green);color:#fff}
+.tabs{display:flex;border-bottom:1px solid var(--border);background:var(--s1);padding:0 20px;overflow-x:auto}
+.tab{display:flex;align-items:center;gap:4px;padding:11px 15px;font-size:12px;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;color:var(--t3);white-space:nowrap;background:none;border-left:none;border-right:none;border-top:none;font-family:inherit}
+.tab:hover{color:var(--t1)}.tab.active{color:var(--t1);border-bottom-color:var(--green)}
+.tsec{display:none;padding:20px;max-width:960px;margin:0 auto}.tsec.active{display:block}
+.section-full{background:var(--s1);border:1px solid var(--border);border-radius:var(--rl2);padding:16px;margin-bottom:14px}
+.ctitle{font-size:10px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:640px){.cols{grid-template-columns:1fr}}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--rl2);padding:15px}
+/* FRISE : Conseil Flash + 3 blocs */
+.frise{display:flex;gap:0;padding:6px 0 2px}
+.fs{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
+.fs:not(:last-child)::after{content:'';position:absolute;top:18px;left:57%;right:-43%;height:3px;background:var(--border);z-index:0}
+.fs.done::after{background:var(--green)}.fs.active::after{background:linear-gradient(to right,var(--orange),var(--border))}
+.fs-dot{width:36px;height:36px;border-radius:50%;border:2px solid var(--border);background:var(--s1);display:flex;align-items:center;justify-content:center;font-size:16px;z-index:1;position:relative}
+.fs-lbl{font-size:11px;text-align:center;font-weight:700;color:var(--t3);line-height:1.3}
+.fs-sub{font-size:9px;color:var(--t3);text-align:center}
+.action-banner{background:var(--ol);border:1.5px solid var(--orange);border-radius:var(--rl2);padding:15px 18px;margin-bottom:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.livrable-box{background:var(--gl);border:1px solid #8ECFBE;border-radius:var(--r);padding:12px 14px;margin-top:10px}
+.obj-item{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border-radius:var(--r);background:var(--bg);border:1px solid var(--border);margin-bottom:6px}
+.obj-num{width:20px;height:20px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0;margin-top:1px}
+.equipe-item{display:flex;align-items:center;gap:9px;padding:8px 11px;border-radius:var(--r);background:var(--bg);border:1px solid var(--border);margin-bottom:6px}
+.eq-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0}
+.suite-item{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border-radius:var(--r);background:var(--bg);border:1px solid var(--border);margin-bottom:6px;font-size:12px;color:var(--t2)}
+.suite-dot{width:7px;height:7px;border-radius:50%;background:var(--border);flex-shrink:0;margin-top:4px}
+.budget-label{font-size:10px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin:12px 0 6px}
+.budget-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px}
+.budget-row:last-child{border-bottom:none}
+.budget-statut{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.bs-paid{background:var(--gl);color:var(--gd)}.bs-pending{background:var(--yl);color:var(--yd)}.bs-future{background:var(--bg);color:var(--t3);border:1px solid var(--border)}.bs-blocked{background:var(--rl);color:var(--rd)}
+.journal-section{background:var(--s1);border:1px solid var(--border);border-radius:var(--rl2);padding:16px;margin-bottom:14px}
+.journal{display:flex;flex-direction:column;gap:0}
+.j-item{display:flex;gap:11px;position:relative;padding-bottom:14px}
+.j-item:last-child{padding-bottom:0}
+.j-item:not(:last-child)::before{content:'';position:absolute;left:11px;top:24px;bottom:0;width:1.5px;background:var(--border)}
+.j-dot{width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;z-index:1}
+.j-done{background:var(--green);color:#fff}.j-active{background:var(--orange);color:#fff;box-shadow:0 0 0 3px var(--ol)}.j-wait{background:var(--bg);color:var(--t3);border:1.5px solid var(--border)}
+.j-body{flex:1}.j-date{font-size:10px;color:var(--t3);margin-bottom:2px;font-weight:600}.j-text{font-size:12px;line-height:1.55;color:var(--t2)}.j-text strong{color:var(--t1)}
+.j-action-btn{margin-top:9px;display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:var(--r);background:var(--orange);color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.cta-next{background:linear-gradient(135deg,#0F6E56,#5FA694);color:#fff;border-radius:var(--rl2);padding:20px 22px;margin-bottom:14px;text-align:center}
+.cta-next button{margin-top:10px;background:#fff;color:var(--gd);border:none;border-radius:var(--r);padding:9px 18px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit}
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.photo-card{border-radius:var(--r);overflow:hidden;border:1px solid var(--border);background:var(--s1)}
+.photo-img{width:100%;height:130px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:32px;border-bottom:1px solid var(--border)}
+.photo-meta{padding:8px 10px}.photo-date{font-size:10px;color:var(--t3);margin-bottom:3px}.photo-caption{font-size:11px;color:var(--t2);line-height:1.4}
+.doc-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--r);background:var(--bg);border:1px solid var(--border);margin-bottom:7px}
+.doc-icon{width:30px;height:30px;border-radius:7px;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.doc-btn{display:inline-flex;align-items:center;gap:3px;padding:5px 10px;border-radius:6px;font-size:11px;font-weight:700;border:1.5px solid var(--border);background:var(--s1);color:var(--t1);cursor:pointer;text-decoration:none;margin-left:auto;flex-shrink:0}
+.msg-wrap{display:flex;flex-direction:column;gap:9px;margin-bottom:14px;max-height:400px;overflow-y:auto;padding:2px}
+.msg-bubble{border-radius:12px;padding:10px 13px;font-size:12px;max-width:78%;line-height:1.55}
+.msg-in{background:var(--bg);border:1px solid var(--border);border-radius:12px 12px 12px 0;align-self:flex-start}
+.msg-out{background:var(--bl);border-radius:12px 12px 0 12px;align-self:flex-end}
+.msg-meta{font-size:10px;font-weight:700;color:var(--t3);margin-bottom:3px}
+.msg-input-row{display:flex;gap:7px}
+.msg-input{flex:1;border:1.5px solid var(--border);border-radius:var(--r);padding:8px 11px;font-size:12px;font-family:inherit;outline:none}
+.msg-send{background:var(--green);color:#fff;border:none;border-radius:var(--r);padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:var(--r);font-size:11px;font-weight:700;border:1.5px solid var(--border);background:var(--s1);color:var(--t1);cursor:pointer;font-family:inherit}
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:200;align-items:center;justify-content:center}
+.mo.open{display:flex}
+.mo-box{background:var(--s1);border-radius:18px;width:420px;max-width:94vw;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.18)}
+.mo-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:700}
+.mo-body{padding:18px}.mo-close{background:none;border:none;font-size:18px;cursor:pointer;color:var(--t3)}
+a{color:var(--gd)}a:hover{color:var(--t1)}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="logo"><div class="logo-mark">T</div>Timonia</div>
+  <div class="nav-r">
+    <button class="btn-expert" onclick="openModal('expertModal')">📞 Mon expert</button>
+    <div class="nav-av" id="navAv" style="background:#378ADD">BC</div>
+    <div style="display:flex;flex-direction:column"><span style="font-size:12px;font-weight:700" id="navName">—</span><span style="font-size:10px;color:var(--t3)">Espace client</span></div>
+  </div>
+</nav>
+
+<div class="tabs">
+  <button class="tab active" id="tab-btn-dossier" onclick="openTab('dossier',this)">🏠 Mon dossier</button>
+  <button class="tab" id="tab-btn-photos" onclick="openTab('photos',this)">📷 Carnet de bord</button>
+  <button class="tab" id="tab-btn-documents" onclick="openTab('documents',this)">📁 Documents</button>
+  <button class="tab" id="tab-btn-messages" onclick="openTab('messages',this)">💬 Messages</button>
+</div>
+
+<!-- ═══ MON DOSSIER ═══ -->
+<div class="tsec active" id="tsec-dossier">
+  <div class="section-full">
+    <div class="ctitle" style="margin-bottom:10px">🗺️ Où en est votre projet</div>
+    <div class="frise" id="frise"></div>
+    <div class="livrable-box" id="livrable-box"></div>
+  </div>
+
+  <div id="cta-next-wrap"></div>
+  <div class="action-banner" id="action-banner" style="display:none">
+    <span style="font-size:22px">⚡</span>
+    <div style="flex:1"><div style="font-size:12px;font-weight:800;color:var(--od);margin-bottom:3px">Votre action est requise</div><div style="font-size:12px;color:var(--od);line-height:1.5" id="action-text">—</div></div>
+    <button class="j-action-btn" style="margin-top:0" onclick="validerDevis()">✅ Je valide</button>
+  </div>
+
+  <div class="cols">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card"><div class="ctitle">📋 Votre situation</div><div id="sit-box" style="font-size:12px;line-height:1.7;color:var(--t2);background:var(--bg);border-radius:var(--r);padding:11px 13px;border-left:3px solid var(--orange)"></div></div>
+      <div class="card"><div class="ctitle">🎯 Vos objectifs</div><div id="obj-list"></div></div>
+      <div class="card"><div class="ctitle">👥 Votre équipe Timonia</div><div id="equipe-list"></div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card"><div class="ctitle">⏭️ Ce qui vient ensuite</div><div id="suite-items"></div></div>
+      <div class="card"><div class="ctitle">💰 Votre budget</div><div id="budget-content"></div></div>
+    </div>
+  </div>
+
+  <div class="journal-section">
+    <div class="ctitle">📋 Journal de votre dossier<span style="font-size:10px;font-weight:400;color:var(--t3);text-transform:none;letter-spacing:0">plus récent en haut</span></div>
+    <div class="journal" id="journal"></div>
+  </div>
+</div>
+
+<!-- ═══ CARNET ═══ -->
+<div class="tsec" id="tsec-photos">
+  <div style="background:var(--bl);border:1px solid #85B7EB;border-radius:var(--r);padding:10px 13px;font-size:12px;color:var(--bd);margin-bottom:16px;font-weight:600">📷 Votre équipe publie des photos au fil de l'avancement. Vous les retrouvez ici en temps réel.</div>
+  <div class="photo-grid" id="photo-grid"></div>
+</div>
+
+<!-- ═══ DOCUMENTS ═══ -->
+<div class="tsec" id="tsec-documents">
+  <div style="background:var(--bl);border:1px solid #85B7EB;border-radius:var(--r);padding:10px 13px;font-size:12px;color:var(--bd);margin-bottom:14px;font-weight:600">📁 Vos documents sont stockés de façon sécurisée.</div>
+  <div id="doc-list"></div>
+</div>
+
+<!-- ═══ MESSAGES ═══ -->
+<div class="tsec" id="tsec-messages">
+  <div style="max-width:640px;margin:0 auto">
+    <div class="card">
+      <div class="ctitle">💬 Conversation avec votre équipe</div>
+      <div class="msg-wrap" id="msg-wrap"></div>
+      <div class="msg-input-row"><input type="text" class="msg-input" placeholder="Votre message…" id="msgInput" onkeydown="if(event.key==='Enter')sendMsg()"><button class="msg-send" onclick="sendMsg()">Envoyer</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EXPERT -->
+<div class="mo" id="expertModal" onclick="if(event.target===this)closeModal('expertModal')">
+  <div class="mo-box">
+    <div class="mo-head">📞 Contacter votre expert<button class="mo-close" onclick="closeModal('expertModal')">✕</button></div>
+    <div class="mo-body" id="expert-body"></div>
+  </div>
+</div>
+
+<script>
+/* ═══ DOSSIER CLIENT (démo) — mêmes clés que l'OS Partner ═══
+   La vue client dérive TOUT de window.T (étape → bloc, type → livrable, tarifs). */
+var DOSSIER={
+  prenom:'Bernard',nom:'M. Bernard Chaumont',type:'renovation',etape:'06',statut:'en_cours',
+  situation:"Votre bien du 14 rue Pasteur (Lyon 7e) est occupé par un locataire en impayé depuis 14 mois (dette 8 400 €). Classé DPE-F, ce qui bloque toute revalorisation du loyer.",
+  objectifs:["Récupérer le bien et régulariser la situation locative","Rénover jusqu'au DPE-C grâce aux aides","Remettre en location à ~900 €/mois (contre 620 € aujourd'hui)"],
+  variables:{travaux:24800,travauxReel:null},
+  acompteDemande:{montant:1240,statut:'facture'}, /* l'admin a émis la facture d'acompte */
+  factures:[{bloc:1,kind:'audit',montant:2200,statut:'payee',date:'15 fév. 2024'},{bloc:2,kind:'acompte',montant:1240,statut:'emise'}],
+  travauxArtisans:[{nom:'Chausson Isolation',montant:14200},{nom:'Électricité Morel',montant:8400},{nom:'Menuiseries Bordet',montant:2200}],
+  action:{text:"Les devis de vos 3 artisans (RGE) sont prêts. Votre accord est nécessaire pour lancer la coordination des travaux."},
+  suite:["Coordination des artisans sélectionnés","Réception des travaux (par vos soins)","Remise en location à ~900 €/mois"],
+  equipe:[
+    {initials:'CG',color:'#FF8352',name:'Clara Guérin',role:'Votre interlocutrice — coordination terrain',phone:'06 71 20 33 14',main:true},
+    {initials:'SL',color:'#378ADD',name:'Sophie Leroux',role:'Commercial B2B',phone:'06 62 45 18 07',main:false},
+    {initials:'RP',color:'#7F77DD',name:'Rémi Payet',role:'Back-office — juridique',phone:'06 14 77 26 90',main:false},
+  ],
+  photos:[
+    {date:'28 fév. 2024',caption:'État initial du logement avant travaux — séjour'},
+    {date:'12 mars 2024',caption:"Coordination artisans — isolation par l'extérieur"},
+  ],
+  docs:[
+    {name:'Devis artisans × 3 (RGE)',meta:'Votre validation requise',icon:'📋',urgent:true},
+    {name:'Votre Plan de Vol de Rénovation',meta:'Livrable d\'audit · 12 fév. 2024',icon:'📄'},
+    {name:"Facture Audit — 2 200 €",meta:'Payée · 15 fév. 2024',icon:'🧾'},
+    {name:"Facture Acompte — 1 240 €",meta:'À régler',icon:'🧾'},
+  ],
+  messages:[
+    {who:'Clara Guérin',out:false,date:'18 mars 09h14',text:'Bonjour, les 3 devis des artisans sont disponibles dans Documents. Votre accord est nécessaire pour lancer la coordination des travaux.'},
+    {who:'Vous',out:true,date:'18 mars 11h42',text:"Bonjour Clara, j'ai des questions sur la garantie du devis Chausson Isolation."},
+    {who:'Clara Guérin',out:false,date:'18 mars 14h30',text:'Chausson est certifié RGE avec garantie décennale. Je vous envoie le justificatif.'},
+  ],
+  journal:[
+    {date:'18 mars 2024',text:"<strong>Votre accord est attendu</strong> sur les devis des 3 artisans. Disponibles dans l'onglet Documents.",type:'active',action:true},
+    {date:'28 fév. 2024',text:"Nous avons sélectionné <strong>3 artisans qualifiés RGE</strong>. Total devis : 24 800 €.",type:'done'},
+    {date:'14 fév. 2024',text:"Vous avez <strong>validé le Plan de Vol</strong> et signé le devis de mise en œuvre.",type:'done'},
+    {date:'12 fév. 2024',text:"Votre <strong>livrable d'audit</strong> vous a été remis. Facture Audit de 2 200 €.",type:'done'},
+    {date:'18 jan. 2024',text:"Vous avez <strong>signé la mission Timonia</strong>.",type:'done'},
+    {date:'8 jan. 2024',text:"<strong>Conseil Flash</strong> — situation analysée, objectifs définis.",type:'done'},
+  ],
+};
+
+/* ═══ INIT ═══ */
+document.getElementById('navAv').textContent=(DOSSIER.prenom[0]||'B').toUpperCase();
+document.getElementById('navName').textContent=DOSSIER.prenom;
+
+function activeBloc(){return T.blocForEtape(DOSSIER.etape);}
+
+/* FRISE : Conseil Flash (amont) + 3 blocs */
+function renderFrise(){
+  var ab=activeBloc();var cloture=DOSSIER.etape===T.PIPELINE[T.PIPELINE.length-1].n;
+  var steps=[{lbl:'Conseil Flash',icon:'⚡',amont:true}].concat(T.BLOCS.map(function(b){return {lbl:b.title,icon:b.id===1?'🔍':b.id===2?'🔧':'🏁',id:b.id,color:b.color,etapes:b.etapes};}));
+  document.getElementById('frise').innerHTML=steps.map(function(s,i){
+    var cls,col;
+    if(s.amont){cls='done';col='var(--green)';}
+    else if(cloture){cls='done';col=s.color;}
+    else if(ab&&s.id<ab.id){cls='done';col=s.color;}
+    else if(ab&&s.id===ab.id){cls='active';col=s.color;}
+    else {cls='';col='';}
+    var dotStyle=(cls==='done')?'background:'+col+';border-color:'+col+';color:#fff':(cls==='active')?'background:'+col+';border-color:'+col+';color:#fff;box-shadow:0 0 0 4px '+col+'33':'';
+    return '<div class="fs '+cls+'"><div class="fs-dot" style="'+dotStyle+'">'+(cls==='done'?'✓':s.icon)+'</div><div class="fs-lbl" style="'+(cls?'color:'+col:'')+'">'+s.lbl+'</div>'+(s.etapes?'<div class="fs-sub">étapes '+s.etapes.join('-')+'</div>':'<div class="fs-sub">offert</div>')+'</div>';
+  }).join('');
+  // Livrable dynamique (visible dès Bloc 1)
+  var lb=document.getElementById('livrable-box');
+  if(ab&&ab.id>=1){lb.style.display='block';lb.innerHTML='<div style="font-size:10px;font-weight:800;color:var(--gd);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">📄 Votre livrable d\'audit</div><div style="font-size:14px;font-weight:700;color:var(--gd)">« '+T.livrableFor(DOSSIER.type)+' »</div>';}
+  else lb.style.display='none';
+}
+
+/* CTA prochaine étape (clôture) */
+function renderCTA(){
+  var w=document.getElementById('cta-next-wrap');
+  if(DOSSIER.etape===T.PIPELINE[T.PIPELINE.length-1].n){w.innerHTML='<div class="cta-next"><div style="font-size:16px;font-weight:800">🎉 Votre projet est livré !</div><div style="font-size:13px;opacity:.9;margin-top:4px">Un nouveau projet immobilier en tête ?</div><button onclick="alert(\'Nouvelle demande enregistrée — votre expert vous recontacte.\')">Prêt pour la prochaine étape avec Timonia ?</button></div>';}
+  else w.innerHTML='';
+}
+
+function cliGet(k,def){try{var v=localStorage.getItem('tim_cli_'+k);return v!=null?JSON.parse(v):def;}catch(e){return def;}}
+function cliSet(k,v){localStorage.setItem('tim_cli_'+k,JSON.stringify(v));}
+DOSSIER.situation=cliGet('sit',DOSSIER.situation);
+DOSSIER.objectifs=cliGet('obj',DOSSIER.objectifs);
+function renderSit(){document.getElementById('sit-box').innerHTML='<textarea style="width:100%;border:none;background:transparent;font-family:inherit;font-size:12px;line-height:1.7;color:var(--t2);resize:vertical;outline:none;min-height:56px" oninput="saveSitC(this.value)" placeholder="Décrivez votre situation…">'+(DOSSIER.situation||'').replace(/</g,'&lt;')+'</textarea>';}
+function saveSitC(v){DOSSIER.situation=v;cliSet('sit',v);}
+function renderObj(){document.getElementById('obj-list').innerHTML=(DOSSIER.objectifs.length?DOSSIER.objectifs:['']).map(function(o,i){return '<div class="obj-item"><div class="obj-num">'+(i+1)+'</div><input value="'+((o||'')+'').replace(/"/g,'&quot;')+'" oninput="saveObjC('+i+',this.value)" placeholder="Objectif '+(i+1)+' (ex: atteindre le DPE C)" style="flex:1;border:1px solid transparent;border-radius:6px;padding:4px 7px;font-size:12px;font-family:inherit;background:transparent;outline:none;color:var(--t2)" onfocus="this.style.borderColor=&quot;var(--green)&quot;;this.style.background=&quot;#fff&quot;" onblur="this.style.borderColor=&quot;transparent&quot;;this.style.background=&quot;transparent&quot;"><button onclick="delObjC('+i+')" title="Supprimer" style="border:none;background:none;color:var(--t3);cursor:pointer;font-size:12px">✕</button></div>';}).join('')+'<button class="btn" style="margin-top:6px;font-size:11px" onclick="addObjC()">+ Ajouter un objectif</button>';}
+function saveObjC(i,v){DOSSIER.objectifs[i]=v;cliSet('obj',DOSSIER.objectifs);}
+function addObjC(){DOSSIER.objectifs.push('');cliSet('obj',DOSSIER.objectifs);renderObj();}
+function delObjC(i){DOSSIER.objectifs.splice(i,1);cliSet('obj',DOSSIER.objectifs);renderObj();}
+function renderEquipe(){document.getElementById('equipe-list').innerHTML=DOSSIER.equipe.map(function(e){return '<div class="equipe-item"><div class="eq-av" style="background:'+e.color+'">'+e.initials+'</div><div style="flex:1"><div style="font-size:12px;font-weight:700">'+e.name+(e.main?' <span style="font-size:10px;color:var(--od)">← votre interlocutrice</span>':'')+'</div><div style="font-size:10px;color:var(--t3)">'+e.role+'</div></div><a href="tel:'+e.phone.replace(/\s/g,'')+'" style="font-size:11px;font-weight:700;color:var(--blue);text-decoration:none">'+e.phone+'</a></div>';}).join('');}
+function renderSuite(){document.getElementById('suite-items').innerHTML=DOSSIER.suite.map(function(s){return '<div class="suite-item"><div class="suite-dot"></div><span>'+s+'</span></div>';}).join('');}
+
+/* BUDGET — dérivé de la config (plus d'avoirs fidélité) */
+function renderBudget(){
+  var t=T.type(DOSSIER.type);var html='<div class="budget-label">Honoraires Timonia</div>';
+  // Bloc 1 audit
+  var f1=DOSSIER.factures.find(function(f){return f.kind==='audit';});
+  html+=budgetRow('Bloc 1 · Audit ('+t.short.replace(/^[^ ]+ /,'')+')',t.bloc1.toLocaleString('fr-FR')+' €',f1&&f1.statut==='payee'?'paid':'pending');
+  // Bloc 2 acompte
+  if(t.acompte_autorise){
+    var f2=DOSSIER.factures.find(function(f){return f.kind==='acompte';});
+    if(f2) html+=budgetRow('Bloc 2 · Acompte travaux',f2.montant.toLocaleString('fr-FR')+' €',f2.statut==='payee'?'paid':'pending');
+    else html+=budgetRow('Bloc 2 · Acompte travaux','sur demande','future');
+  } else {
+    html+=budgetRow('Bloc 2 · Acompte','0 € — non applicable','blocked');
+  }
+  // Bloc 3 solde
+  var v=T.variableEtape03(DOSSIER.type);var reel=v?DOSSIER.variables[v.key+'Reel']:null;
+  var soldeTxt,soldeStatut;
+  if(t.solde.mode==='forfait'){soldeTxt=t.solde.montant.toLocaleString('fr-FR')+' €';soldeStatut='future';}
+  else if(reel!=null){var ac=DOSSIER.acompteDemande&&DOSSIER.acompteDemande.statut!=='a_traiter'?DOSSIER.acompteDemande.montant:0;soldeTxt=T.soldeBloc3(DOSSIER.type,reel,ac).toLocaleString('fr-FR')+' €';soldeStatut='future';}
+  else {soldeTxt='calculé à la livraison';soldeStatut='future';}
+  html+=budgetRow('Bloc 3 · Solde final',soldeTxt,soldeStatut);
+  html+='<div style="font-size:10px;color:var(--t3);margin-top:6px;line-height:1.5">'+t.solde.label+'. Tous les prix sont TTC.</div>';
+
+  // Travaux (paiement direct artisans) — rénovation
+  if(DOSSIER.travauxArtisans&&DOSSIER.travauxArtisans.length){
+    html+='<div class="budget-label">Travaux (paiement direct aux artisans)</div>';
+    var tot=0;DOSSIER.travauxArtisans.forEach(function(a){tot+=a.montant;html+=budgetRow(a.nom,a.montant.toLocaleString('fr-FR')+' €','pending');});
+    html+='<div class="budget-row" style="font-weight:800"><span>Total travaux</span><span>'+tot.toLocaleString('fr-FR')+' €</span></div>';
+    html+='<div style="font-size:10px;color:var(--t3);margin-top:6px;line-height:1.5">Timonia est courtier en travaux : les artisans sont payés directement par vous. La réception des travaux se fait par vos soins.</div>';
+  }
+  document.getElementById('budget-content').innerHTML=html;
+}
+function budgetRow(lbl,montant,statut){
+  var badge={paid:'<span class="budget-statut bs-paid">✓ Payé</span>',pending:'<span class="budget-statut bs-pending">⏳ En cours</span>',future:'<span class="budget-statut bs-future">À venir</span>',blocked:'<span class="budget-statut bs-blocked">Bloqué (loi)</span>'}[statut]||'';
+  return '<div class="budget-row"><span>'+lbl+'</span><div style="display:flex;align-items:center;gap:6px"><span style="font-weight:600">'+montant+'</span>'+badge+'</div></div>';
+}
+
+function renderJournal(){
+  document.getElementById('journal').innerHTML=DOSSIER.journal.map(function(j){
+    var dotCls=j.type==='done'?'j-done':j.type==='active'?'j-active':'j-wait';var dotTxt=j.type==='done'?'✓':j.type==='active'?'⚡':'○';
+    var extra=j.action?'<button class="j-action-btn" onclick="validerDevis()">✅ Je valide les devis</button>':'';
+    return '<div class="j-item"><div class="j-dot '+dotCls+'">'+dotTxt+'</div><div class="j-body"><div class="j-date">'+j.date+'</div><div class="j-text">'+j.text+'</div>'+extra+'</div></div>';
+  }).join('');
+}
+function renderAction(){
+  if(DOSSIER.action&&DOSSIER.etape!==T.PIPELINE[T.PIPELINE.length-1].n){document.getElementById('action-banner').style.display='flex';document.getElementById('action-text').textContent=DOSSIER.action.text;}
+}
+function renderPhotos(){
+  var el=document.getElementById('photo-grid');
+  if(!DOSSIER.photos.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--t3);grid-column:1/-1">Pas encore de photos.</div>';return;}
+  el.innerHTML=DOSSIER.photos.map(function(p){return '<div class="photo-card"><div class="photo-img">📷</div><div class="photo-meta"><div class="photo-date">'+p.date+'</div><div class="photo-caption">'+p.caption+'</div></div></div>';}).join('');
+}
+function renderDocs(){
+  document.getElementById('doc-list').innerHTML=DOSSIER.docs.map(function(d){return '<div class="doc-item" '+(d.urgent?'style="border-color:var(--orange);background:var(--ol)"':'')+'><div class="doc-icon" '+(d.urgent?'style="background:var(--ol)"':'')+'>'+d.icon+'</div><div style="flex:1"><div style="font-size:12px;font-weight:700;'+(d.urgent?'color:var(--od)':'')+'">'+d.name+'</div><div style="font-size:10px;color:var(--t3)">'+d.meta+'</div></div><a href="https://drive.google.com" target="_blank" class="doc-btn"'+(d.urgent?' style="background:var(--orange);color:#fff;border-color:var(--orange)"':'')+'>'+(d.urgent?'Consulter →':'Ouvrir →')+'</a></div>';}).join('');
+}
+function renderMessages(){
+  document.getElementById('msg-wrap').innerHTML=DOSSIER.messages.map(function(m){return '<div class="msg-bubble '+(m.out?'msg-out':'msg-in')+'"><div class="msg-meta">'+m.who+' · '+m.date+'</div>'+m.text+'</div>';}).join('');
+}
+function renderExpert(){
+  var e=DOSSIER.equipe.find(function(x){return x.main;})||DOSSIER.equipe[0];
+  document.getElementById('expert-body').innerHTML='<div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg);border-radius:var(--r);margin-bottom:16px"><div style="width:42px;height:42px;border-radius:50%;background:'+e.color+';display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff">'+e.initials+'</div><div><div style="font-size:13px;font-weight:700">'+e.name+'</div><div style="font-size:11px;color:var(--t3)">'+e.role+'</div></div></div><div style="text-align:center;margin-bottom:16px"><div style="font-size:20px;font-weight:700">'+e.phone+'</div></div><a href="tel:'+e.phone.replace(/\s/g,'')+'" style="display:block;text-align:center;padding:10px;border-radius:var(--r);background:var(--green);color:#fff;font-size:13px;font-weight:700;text-decoration:none">📞 Appeler</a>';
+}
+
+/* ACTIONS */
+function validerDevis(){var now=new Date();alert('✅ Validation enregistrée !\nHorodatage : '+now.toLocaleDateString('fr-FR')+' à '+now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})+'\n\nVotre équipe a été notifiée.');document.getElementById('action-banner').style.display='none';}
+function sendMsg(){var inp=document.getElementById('msgInput');var t=inp.value.trim();if(!t)return;DOSSIER.messages.push({who:'Vous',out:true,date:'maintenant',text:t});renderMessages();inp.value='';var w=document.getElementById('msg-wrap');w.scrollTop=w.scrollHeight;}
+function openTab(id,btn){document.querySelectorAll('.tsec').forEach(function(el){el.classList.remove('active');});document.querySelectorAll('.tab').forEach(function(el){el.classList.remove('active');});document.getElementById('tsec-'+id).classList.add('active');if(btn)btn.classList.add('active');}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+/* BOOT */
+renderFrise();renderCTA();renderAction();renderSit();renderObj();renderEquipe();renderSuite();renderBudget();renderJournal();renderPhotos();renderDocs();renderMessages();renderExpert();
+</script>
+</body>
+</html>

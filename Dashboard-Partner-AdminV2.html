@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Timonia OS — Admin (aligné v2.1)</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="timonia-config.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:13px;color:#0B0B0B;background:#F5F5F3;overflow:hidden}
+:root{
+  --green:#5FA694;--gl:#E1F5EE;--gd:#0F6E56;
+  --orange:#FF8352;--ol:#FAECE7;--od:#993C1D;
+  --blue:#378ADD;--bl:#E6F1FB;--bd:#185FA5;
+  --red:#E24B4A;--rl:#FCEBEB;--rd:#A32D2D;
+  --yellow:#EDA100;--yl:#FAEEDA;--yd:#854F0B;
+  --purple:#7F77DD;--pl:#EEEDFE;--pd:#534AB7;
+  --border:#E1E0D9;--bg:#F5F5F3;--s0:#FAFAF9;--s1:#FFFFFF;
+  --t1:#0B0B0B;--t2:#52514E;--t3:#898781;
+  --nav:#1C1C1C;--r:8px;--rl2:12px
+}
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:210px;flex-shrink:0;background:var(--nav);display:flex;flex-direction:column;overflow:hidden}
+.sb-logo{display:flex;align-items:center;gap:9px;padding:14px 14px 12px;border-bottom:1px solid #2a2a2a}
+.sb-logo-mark{width:30px;height:30px;border-radius:8px;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:800;flex-shrink:0}
+.sb-logo-name{font-size:13px;font-weight:700;color:#fff}
+.sb-logo-sub{font-size:9px;color:#555;margin-top:1px}
+.sb-section{padding:12px 14px 4px;font-size:9px;font-weight:800;color:#444;text-transform:uppercase;letter-spacing:.1em}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 12px;cursor:pointer;color:#888;font-size:12px;font-weight:600;border-radius:6px;margin:1px 8px;transition:all .15s;position:relative}
+.ni:hover{background:#252525;color:#ccc}
+.ni.active{background:#2d2d2d;color:#fff}
+.ni.active::before{content:'';position:absolute;left:-8px;top:50%;transform:translateY(-50%);width:3px;height:18px;background:var(--green);border-radius:0 2px 2px 0}
+.ni-icon{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+.ni-badge{margin-left:auto;background:var(--red);color:#fff;font-size:9px;font-weight:800;padding:1px 5px;border-radius:8px;min-width:16px;text-align:center}
+.sb-bot{margin-top:auto;padding:8px;border-top:1px solid #2a2a2a}
+.sb-user{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;cursor:pointer;transition:all .15s}
+.sb-user:hover{background:#252525}
+.sb-av{width:26px;height:26px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0}
+.sb-uname{font-size:11px;font-weight:600;color:#bbb}
+.sb-urole{font-size:9px;color:#555}
+
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--s1);border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap}
+.topbar-title{font-size:14px;font-weight:700;color:var(--t1)}
+.search-box{display:flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);min-width:180px}
+.search-box input{border:none;background:none;font-size:12px;font-family:inherit;outline:none;color:var(--t1);width:100%}
+.pills{display:flex;gap:4px}
+.pill{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);color:var(--t3);background:var(--s1);transition:all .12s;white-space:nowrap}
+.pill.on{background:var(--t1);color:#fff;border-color:var(--t1)}
+.pill.on-g{background:var(--green);color:#fff;border-color:var(--green)}
+.pill.on-r{background:var(--red);color:#fff;border-color:var(--red)}
+.type-sel{padding:5px 9px;border:1.5px solid var(--border);border-radius:var(--r);font-size:11px;font-weight:700;font-family:inherit;color:var(--t2);background:var(--s1);cursor:pointer;outline:none}
+
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.tpane{display:none;flex:1;overflow:hidden;flex-direction:column}
+.tpane.active{display:flex}
+
+.kanban-wrap{flex:1;overflow-x:auto;overflow-y:hidden;padding:14px;display:flex;gap:10px}
+.k-col{flex-shrink:0;width:198px;display:flex;flex-direction:column}
+.k-col-head{display:flex;align-items:center;gap:7px;padding:5px 2px 8px;flex-shrink:0}
+.k-col-num{font-size:9px;font-weight:800;font-family:monospace;color:#fff;background:var(--t3);border-radius:5px;padding:2px 5px}
+.k-col-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;color:var(--t2);flex:1;line-height:1.2}
+.k-col-count{font-size:10px;font-weight:700;padding:1px 6px;border-radius:8px;background:var(--bg);color:var(--t3);border:1px solid var(--border)}
+.k-cards{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding-bottom:20px}
+.k-bloc-band{height:3px;border-radius:3px;margin:0 2px 7px}
+
+.k-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--rl2);padding:10px 11px;cursor:pointer;transition:all .18s;position:relative}
+.k-card:hover{border-color:var(--green);box-shadow:0 2px 10px rgba(0,0,0,.07);transform:translateY(-1px)}
+.k-card.abandoned{opacity:.5;border-style:dashed}
+.k-card.cloture{background:var(--gl);border-color:#9BD3C4}
+.k-type{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;margin-bottom:6px;display:inline-block}
+.k-name{font-size:12px;font-weight:700;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.k-sub{font-size:10px;color:var(--t3);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.k-flags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.k-flag{font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px}
+.k-foot{display:flex;align-items:center;justify-content:space-between}
+.k-trigs{display:flex;gap:2px}
+.k-trig{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;color:#fff}
+.k-date{font-size:10px;color:var(--t3)}
+
+.list-wrap{flex:1;overflow-y:auto;padding:14px}
+table{width:100%;border-collapse:collapse;background:var(--s1);border-radius:var(--rl2);overflow:hidden;border:1px solid var(--border)}
+thead tr{border-bottom:1px solid var(--border);background:var(--s0)}
+th{text-align:left;padding:8px 12px;font-size:10px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+td{padding:8px 12px;border-bottom:1px solid var(--border);font-size:12px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--bg);cursor:pointer}
+
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--rl2);padding:14px;margin-bottom:12px}
+.card-title{font-size:10px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:11px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.bg{background:var(--gl);color:var(--gd)}.bo{background:var(--ol);color:var(--od)}.bb{background:var(--bl);color:var(--bd)}.br{background:var(--rl);color:var(--rd)}.by{background:var(--yl);color:var(--yd)}.bp{background:var(--pl);color:var(--pd)}.bgr{background:var(--bg);color:var(--t3);border:1px solid var(--border)}
+.btn{display:inline-flex;align-items:center;gap:4px;padding:6px 11px;border-radius:var(--r);font-size:11px;font-weight:700;border:1.5px solid var(--border);background:var(--s1);color:var(--t1);cursor:pointer;font-family:inherit;transition:all .15s}.btn:hover{background:var(--bg)}
+.btn-sm{padding:4px 8px;font-size:10px}
+.btn-g{background:var(--green);color:#fff;border-color:var(--green)}.btn-g:hover{opacity:.9}
+.btn-p{background:var(--orange);color:#fff;border-color:var(--orange)}.btn-p:hover{opacity:.9}
+.btn-b{background:var(--blue);color:#fff;border-color:var(--blue)}.btn-b:hover{opacity:.9}
+.btn-danger{border-color:var(--red);color:var(--red)}.btn-danger:hover{background:var(--rl)}
+.btn-ghost{background:none;border:none;color:var(--t3);padding:3px 6px;cursor:pointer;font-family:inherit;font-size:11px;font-weight:600}.btn-ghost:hover{color:var(--t1)}
+.kpi{background:var(--bg);border-radius:var(--r);padding:12px 13px;border:1px solid var(--border)}
+.kv{font-size:20px;font-weight:800;line-height:1.1}
+.kl{font-size:10px;color:var(--t3);margin-top:3px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+
+.user-card{display:flex;align-items:center;gap:11px;padding:10px 13px;border:1px solid var(--border);border-radius:var(--rl2);background:var(--s1);margin-bottom:7px}
+.user-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0}
+.trig-badge{font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px;background:var(--bg);border:1.5px solid var(--border);color:var(--t1);font-family:monospace}
+
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:200;align-items:center;justify-content:center}
+.mo.open{display:flex}
+.mo-box{background:var(--s1);border-radius:16px;width:440px;max-width:94vw;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.mo-head{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:700}
+.mo-body{padding:16px}
+.mo-foot{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:7px;justify-content:flex-end}
+.mo-close{background:none;border:none;font-size:17px;cursor:pointer;color:var(--t3)}.mo-close:hover{color:var(--t1)}
+.form-group{margin-bottom:11px}
+.form-group label{display:block;font-size:10px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.form-group input,.form-group select,.form-group textarea{width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:8px 11px;font-size:13px;font-family:inherit;outline:none;color:var(--t1);background:var(--s1)}
+.form-group input:focus,.form-group select:focus{border-color:var(--green)}
+.fact-input{border:1.5px solid var(--border);border-radius:5px;padding:5px 8px;font-size:12px;font-family:inherit;outline:none;text-align:right;width:110px}
+.fact-input:focus{border-color:var(--green)}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ═══ SIDEBAR ═══ -->
+<div class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-mark">T</div>
+    <div><div class="sb-logo-name">Timonia OS</div><div class="sb-logo-sub" id="sb-sub">Espace partenaire</div></div>
+  </div>
+
+  <div class="sb-section">Pipeline unique</div>
+  <div class="ni active" id="ni-pipeline" onclick="setNav('pipeline')"><span class="ni-icon">📋</span><span id="ni-pipeline-lbl">Mes dossiers</span></div>
+
+  <div class="sb-section" style="margin-top:6px">Gestion</div>
+  <div class="ni" id="ni-users" onclick="setNav('users')"><span class="ni-icon">👤</span>Utilisateurs<span class="ni-badge" id="badge-users">0</span></div>
+  <div class="ni" id="ni-facturation" onclick="setNav('facturation')"><span class="ni-icon">💰</span>Facturation<span class="ni-badge" id="badge-fact" style="background:var(--orange);display:none">0</span></div>
+  <div class="ni" id="ni-stats" onclick="setNav('stats')"><span class="ni-icon">📊</span>Stats</div>
+
+  <div class="sb-bot">
+    <div class="sb-user" onclick="doLogout()">
+      <div class="sb-av" id="sbAv">ND</div>
+      <div><div class="sb-uname" id="sbNom">—</div><div class="sb-urole" id="sbRole">—</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">Mes dossiers</div>
+    <div class="search-box" id="search-box">
+      <span style="color:var(--t3);font-size:12px">🔍</span>
+      <input type="text" placeholder="Client, réf, email…" id="search-input" oninput="onSearch(this.value)">
+    </div>
+    <div class="pills" id="status-pills">
+      <span class="pill on-g" id="pill-en_cours" onclick="setStatut('en_cours',this)">En cours</span>
+      <span class="pill" id="pill-cloture" onclick="setStatut('cloture',this)">Clôturés</span>
+      <span class="pill" id="pill-abandonne" onclick="setStatut('abandonne',this)">Abandonnés</span>
+      <span class="pill" id="pill-tous" onclick="setStatut('tous',this)">Tous</span>
+    </div>
+    <select class="type-sel" id="type-sel" onchange="onType(this.value)"><option value="">Tous les types</option></select>
+    <button class="btn btn-g btn-sm" id="btn-new" onclick="openModal('newDossierModal')">+ Nouveau dossier</button>
+    <div style="display:flex;gap:4px" id="view-btns">
+      <button class="btn btn-sm" id="btn-kanban" onclick="setView('kanban')" style="font-size:15px;font-weight:800">⊞</button>
+      <button class="btn btn-sm" id="btn-list" onclick="setView('list')" style="font-size:15px">☰</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="tpane active" id="pane-pipeline">
+      <div class="kanban-wrap" id="kanban-view"></div>
+      <div class="list-wrap" id="list-view" style="display:none">
+        <table><thead><tr>
+          <th>Client</th><th>Réf</th><th>Type</th><th>Étape</th><th>Bloc</th><th>Équipe</th><th>Statut</th>
+        </tr></thead><tbody id="list-tbody"></tbody></table>
+      </div>
+    </div>
+    <div class="tpane" id="pane-users" style="overflow-y:auto;padding:14px;flex-direction:column"><div id="users-list"></div></div>
+    <div class="tpane" id="pane-facturation" style="overflow-y:auto;padding:14px;flex-direction:column"><div id="factu-content"></div></div>
+    <div class="tpane" id="pane-stats" style="overflow-y:auto;padding:14px;flex-direction:column"><div id="stats-content"></div></div>
+  </div>
+</div>
+</div>
+
+<!-- MODAL NOUVEAU DOSSIER -->
+<div class="mo" id="newDossierModal" onclick="if(event.target===this)closeModal('newDossierModal')">
+  <div class="mo-box">
+    <div class="mo-head">➕ Nouveau dossier<button class="mo-close" onclick="closeModal('newDossierModal')">✕</button></div>
+    <div class="mo-body">
+      <div class="form-group"><label>Nom du client</label><input type="text" id="nc-nom" placeholder="M. / Mme Prénom Nom"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="nc-email" placeholder="client@email.fr"></div>
+      <div class="form-group"><label>Téléphone</label><input type="tel" id="nc-tel" placeholder="06 XX XX XX XX"></div>
+      <div style="font-size:11px;color:var(--t3);line-height:1.5">Le dossier démarre à l'étape <strong>01 · Appel Qualif</strong>. Le type de projet se choisit ensuite sur la fiche (onglet Projet).</div>
+    </div>
+    <div class="mo-foot">
+      <button class="btn" onclick="closeModal('newDossierModal')">Annuler</button>
+      <button class="btn btn-g" onclick="createDossier()">Créer le dossier →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ACTIVER USER -->
+<div class="mo" id="activerModal" onclick="if(event.target===this)closeModal('activerModal')">
+  <div class="mo-box" style="width:400px">
+    <div class="mo-head" id="activer-title">Activer le compte<button class="mo-close" onclick="closeModal('activerModal')">✕</button></div>
+    <div class="mo-body">
+      <div class="form-group"><label>Trigramme</label>
+        <input type="text" id="act-trig" placeholder="Ex: CG1" maxlength="3" style="text-transform:uppercase;font-weight:800;font-family:monospace;font-size:16px;letter-spacing:.2em">
+        <div style="font-size:10px;color:var(--t3);margin-top:3px">2 premières lettres du prénom + 1 chiffre.</div>
+      </div>
+      <div class="form-group"><label>Rôle de compte (droits)</label>
+        <select id="act-rolecompte"><option value="mandataire">Mandataire</option><option value="manager">Manager</option><option value="admin">Admin</option></select>
+      </div>
+      <div class="form-group"><label>Spécialité (barème commission)</label>
+        <select id="act-spec"></select>
+      </div>
+      <div class="form-group"><label>Zone géographique</label><input type="text" id="act-zone" placeholder="Ex: Lyon · Rhône"></div>
+    </div>
+    <div class="mo-foot">
+      <button class="btn" onclick="closeModal('activerModal')">Annuler</button>
+      <button class="btn btn-g" onclick="confirmActiver()">✅ Activer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   OS PARTNER — 100 % piloté par la config partagée window.T (timonia-config.js).
+   AUCUNE étape / type / tarif / barème n'est redéfini ici.
+   ⚠️ DÉMO : le rôle du user connecté est fixé plus bas (currentUser). En prod,
+   il vient de l'authentification. Chaque vue aura sa route dédiée (cf. §7).
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── UTILISATEURS (roleCompte + specialite) ── */
+var MANDATAIRES=[
+  {trig:'CG1',nom:'Clara Guerin',color:'#FF8352',roleCompte:'mandataire',spec:'front',zone:'Lyon · Rhône',actif:true,email:'cg@timonia.fr',date_inscription:'2023-11-02'},
+  {trig:'SL1',nom:'Sophie Leroux',color:'#378ADD',roleCompte:'manager',spec:'lead',zone:'Rhône · Ain',actif:true,email:'sl@timonia.fr',date_inscription:'2023-09-15'},
+  {trig:'AM1',nom:'Axel Martin',color:'#5FA694',roleCompte:'mandataire',spec:'sale',zone:'Lyon métropole',actif:true,email:'am@timonia.fr',date_inscription:'2023-12-01'},
+  {trig:'RP1',nom:'Remi Payet',color:'#7F77DD',roleCompte:'mandataire',spec:'back',zone:'National',actif:true,email:'rp@timonia.fr',date_inscription:'2024-01-10'},
+  {trig:'ND1',nom:'Nelly Duong',color:'#5FA694',roleCompte:'admin',spec:null,zone:'Siège',actif:true,email:'admin@demo.fr',date_inscription:'2023-06-01'},
+  {trig:null,nom:'Lucas Bernard',color:'#EDA100',roleCompte:'mandataire',spec:null,zone:null,actif:false,email:'lucas@gmail.com',date_inscription:'2024-03-18'},
+  {trig:null,nom:'Marie Torres',color:'#E24B4A',roleCompte:'mandataire',spec:null,zone:null,actif:false,email:'marie@outlook.fr',date_inscription:'2024-03-20'},
+];
+
+/* ── DOSSIERS (modèle aligné) ──────────────────────────────────────────────
+   type   ∈ clés de T.TYPES · etape ∈ '01'..'07' · statut ∈ en_cours/cloture/abandonne
+   variables : donnée du bien saisie à l'étape 03 (+ réel au bloc 3)
+   factures  : objets indépendants { bloc, kind, montant, statut }
+   acompteDemande : demande d'acompte Rénovation en attente admin (ou null) */
+var DOSSIERS=[
+  {id:'D001',ref:'TIM-2024-087',nom:'M. Bernard Chaumont',email:'b.chaumont@gmail.com',tel:'06 12 34 56 78',
+   type:'renovation',etape:'06',statut:'en_cours',created:'2024-01-03',
+   equipe:{lead:'SL1',sale:'AM1',front:'CG1',back:'RP1'},pct:{lead:10,sale:10,front:20,back:20},
+   situation:"Locataire impayé 14 mois. DPE-F bloquant. Succession en cours.",
+   objectif:"Récupérer le bien, rénover jusqu'au DPE-C, remettre en location à 900 €/mois.",
+   variables:{travaux:24800,travauxReel:null},
+   factures:[{bloc:1,kind:'audit',montant:2200,statut:'payee'}],
+   acompteDemande:{montant:1240,statut:'a_traiter'},
+   messages_pub:[{from:'client',nom:'M. Chaumont',text:"Bonjour, j'ai des questions sur les devis.",ts:'2024-03-18T11:42:00'}],
+   messages_priv:[{from:'admin',nom:'Nelly D.',text:'Dossier prioritaire.',ts:'2024-03-15T09:00:00'}]},
+
+  {id:'D002',ref:'TIM-2024-095',nom:'Mme Fatou Diallo',email:'f.diallo@gmail.com',tel:'06 22 33 44 55',
+   type:'renovation',etape:'04',statut:'en_cours',created:'2024-01-15',
+   equipe:{lead:'SL1',sale:null,front:'CG1',back:null},pct:{lead:10,sale:0,front:20,back:0},
+   situation:"Rénovation énergétique complète. DPE-G.",objectif:"Passer en DPE-C et remettre en location.",
+   variables:{travaux:null,travauxReel:null},
+   factures:[{bloc:1,kind:'audit',montant:2200,statut:'emise'}],
+   acompteDemande:null,messages_pub:[],messages_priv:[]},
+
+  {id:'D003',ref:'TIM-2024-101',nom:'Mme Sylvie Morel',email:'s.morel@gmail.com',tel:'06 33 44 55 66',
+   type:'recherche-location',etape:'01',statut:'en_cours',created:'2024-03-28',
+   equipe:{lead:null,sale:'AM1',front:null,back:null},pct:{lead:0,sale:10,front:0,back:0},
+   situation:"Recherche T2/T3 Lyon 7e, budget 850 €/mois.",objectif:"Trouver et sécuriser un logement avant septembre 2024.",
+   variables:{},factures:[],acompteDemande:null,messages_pub:[],messages_priv:[]},
+
+  {id:'D004',ref:'TIM-2024-100',nom:'M. Karim Benali',email:'k.benali@gmail.com',tel:'06 44 55 66 77',
+   type:'recherche-location',etape:'02',statut:'en_cours',created:'2024-03-26',
+   equipe:{lead:'SL1',sale:null,front:null,back:null},pct:{lead:10,sale:0,front:0,back:0},
+   situation:"Recherche location Lyon 6e.",objectif:"Trouver un logement rapidement.",
+   variables:{},factures:[],acompteDemande:null,messages_pub:[],messages_priv:[]},
+
+  {id:'D005',ref:'TIM-2024-096',nom:'M. Omar Traore',email:'o.traore@gmail.com',tel:'06 55 66 77 88',
+   type:'recherche-achat',etape:'04',statut:'en_cours',created:'2024-03-25',
+   equipe:{lead:'SL1',sale:'AM1',front:null,back:null},pct:{lead:10,sale:10,front:0,back:0},
+   situation:"Achat investissement Lyon.",objectif:"Rendement 6 % minimum.",
+   variables:{},factures:[{bloc:1,kind:'audit',montant:790,statut:'emise'}],
+   acompteDemande:null,messages_pub:[],messages_priv:[]},
+
+  {id:'D006',ref:'TIM-2024-086',nom:'Mme Nora Khelil',email:'n.khelil@gmail.com',tel:'06 66 77 88 99',
+   type:'mise-vente',etape:'05',statut:'en_cours',created:'2024-03-15',
+   equipe:{lead:'SL1',sale:null,front:'CG1',back:'RP1'},pct:{lead:10,sale:0,front:20,back:20},
+   situation:"Bien à vendre, Lyon 3e. Diagnostics à jour.",objectif:"Vendre au meilleur prix sous 4 mois.",
+   variables:{prix:320000,prixReel:null},
+   factures:[{bloc:1,kind:'audit',montant:790,statut:'payee'}],
+   acompteDemande:null,messages_pub:[],messages_priv:[]},
+
+  {id:'D007',ref:'TIM-2024-070',nom:'M. Antoine Roux',email:'a.roux@gmail.com',tel:'',
+   type:'recherche-location',etape:'01',statut:'abandonne',created:'2024-02-01',
+   equipe:{lead:'AM1',sale:null,front:null,back:null},pct:{lead:10,sale:0,front:0,back:0},
+   situation:"Non joignable après 5 relances.",objectif:"—",
+   variables:{},factures:[],acompteDemande:null,
+   messages_pub:[],messages_priv:[{from:'admin',nom:'Nelly D.',text:'Dossier abandonné — non joignable.',ts:'2024-03-15T10:00:00'}]},
+
+  {id:'D008',ref:'TIM-2024-054',nom:'Mme Hélène Fabre',email:'h.fabre@gmail.com',tel:'06 77 88 99 00',
+   type:'mise-location',etape:'09',statut:'cloture',created:'2023-11-20',
+   equipe:{lead:'SL1',sale:null,front:'CG1',back:'RP1'},pct:{lead:10,sale:0,front:20,back:20},
+   situation:"Mise en location T3 Villeurbanne, 68 m².",objectif:"Relouer rapidement au prix du marché.",
+   variables:{surface:68,surfaceReel:68},
+   factures:[{bloc:1,kind:'audit',montant:490,statut:'payee'},{bloc:3,kind:'solde',montant:884,statut:'payee'}],
+   acompteDemande:null,messages_pub:[],messages_priv:[]},
+];
+
+/* ── STATE ── */
+var currentNav='pipeline',currentStatut='en_cours',currentType='',currentView='kanban',searchQ='';
+var activerTarget=null;
+
+/* ── AUTH / RÔLE (démo) ── */
+function authGet(){try{return JSON.parse(localStorage.getItem('tUser'));}catch(e){return null;}}
+function doLogout(){localStorage.removeItem('tUser');alert('Déconnexion (démo).');}
+/* 👉 Pour tester la vue ADMIN, mettre roleCompte:'admin'. Vue MANDATAIRE : 'mandataire'. */
+var currentUser={nom:'Nelly Duong',initials:'ND',color:'#5FA694',roleCompte:'admin',email:'admin@demo.fr'};
+var isPartnerAdmin=(currentUser.roleCompte==='admin'||currentUser.roleCompte==='manager');
+
+function getMyMandataire(){return MANDATAIRES.find(function(m){return m.email===currentUser.email;});}
+function getMyRole(d){var me=getMyMandataire();if(!me)return null;for(var r in d.equipe){if(d.equipe[r]===me.trig)return r;}return null;}
+function myDossiers(){if(isPartnerAdmin)return DOSSIERS;var me=getMyMandataire();if(!me)return[];return DOSSIERS.filter(function(d){return Object.values(d.equipe).some(function(t){return t===me.trig;});});}
+
+/* ── INIT ── */
+(function init(){
+  document.getElementById('sbAv').textContent=currentUser.initials||'ND';
+  document.getElementById('sbAv').style.background=currentUser.color||'#5FA694';
+  document.getElementById('sbNom').textContent=currentUser.nom;
+  document.getElementById('sb-sub').textContent=isPartnerAdmin?'Administration':'Espace partenaire';
+  var roleTxt={admin:'Admin',manager:'Manager',mandataire:'Mandataire'}[currentUser.roleCompte]||'Mandataire';
+  document.getElementById('sbRole').textContent=roleTxt+' · Déconnexion';
+  document.getElementById('ni-pipeline-lbl').textContent=isPartnerAdmin?'Tous les dossiers':'Mes dossiers';
+  if(!isPartnerAdmin) document.getElementById('ni-users').style.display='none';
+  // type filter options depuis la config
+  var sel=document.getElementById('type-sel');
+  T.TYPE_ORDER.forEach(function(k){var o=document.createElement('option');o.value=k;o.textContent=T.TYPES[k].short;sel.appendChild(o);});
+  // spécialité options
+  var spec=document.getElementById('act-spec');
+  spec.innerHTML='<option value="">— Aucune —</option>'+['lead','sale','front','back'].map(function(r){return '<option value="'+r+'">'+T.ROLE_LABELS[r]+' — '+T.ROLE_DESC[r]+' ('+T.BAREME[r]+'%)</option>';}).join('');
+  refreshBadges();
+  setNav('pipeline');
+})();
+
+function refreshBadges(){
+  document.getElementById('badge-users').textContent=MANDATAIRES.filter(function(m){return !m.actif;}).length;
+  var nbAcompte=DOSSIERS.filter(function(d){return d.acompteDemande&&d.acompteDemande.statut==='a_traiter';}).length;
+  var bf=document.getElementById('badge-fact');bf.textContent=nbAcompte;bf.style.display=(isPartnerAdmin&&nbAcompte)?'inline-block':'none';
+}
+
+/* ── NAV ── */
+function setNav(n){
+  currentNav=n;
+  document.querySelectorAll('.ni').forEach(function(el){el.classList.remove('active');});
+  var ni=document.getElementById('ni-'+n);if(ni)ni.classList.add('active');
+  document.querySelectorAll('.tpane').forEach(function(el){el.classList.remove('active');});
+  var titles={pipeline:(isPartnerAdmin?'Tous les dossiers':'Mes dossiers'),users:'Utilisateurs',facturation:'Facturation',stats:'Statistiques'};
+  document.getElementById('topbar-title').textContent=titles[n]||n;
+  var isPipe=(n==='pipeline');
+  document.getElementById('search-box').style.display=isPipe?'flex':'none';
+  document.getElementById('status-pills').style.display=isPipe?'flex':'none';
+  document.getElementById('type-sel').style.display=isPipe?'':'none';
+  document.getElementById('btn-new').style.display=isPipe?'':'none';
+  document.getElementById('view-btns').style.display=isPipe?'flex':'none';
+  if(isPipe){document.getElementById('pane-pipeline').classList.add('active');renderPipeline();}
+  else if(n==='users'){document.getElementById('pane-users').classList.add('active');renderUsers();}
+  else if(n==='facturation'){document.getElementById('pane-facturation').classList.add('active');renderFacturation();}
+  else if(n==='stats'){document.getElementById('pane-stats').classList.add('active');renderStats();}
+}
+function setView(v){currentView=v;document.getElementById('kanban-view').style.display=v==='kanban'?'flex':'none';document.getElementById('list-view').style.display=v==='list'?'block':'none';document.getElementById('btn-kanban').style.fontWeight=v==='kanban'?'800':'400';document.getElementById('btn-list').style.fontWeight=v==='list'?'800':'400';renderPipeline();}
+function setStatut(s,el){currentStatut=s;document.querySelectorAll('#status-pills .pill').forEach(function(x){x.classList.remove('on','on-g','on-r');});el.classList.add(s==='abandonne'?'on-r':s==='en_cours'?'on-g':'on');renderPipeline();}
+function onType(v){currentType=v;renderPipeline();}
+function onSearch(q){searchQ=q;renderPipeline();}
+
+/* ── FILTRAGE ── */
+function getFiltered(){
+  var data=(isPartnerAdmin?DOSSIERS:myDossiers()).slice();
+  if(currentStatut!=='tous') data=data.filter(function(d){return d.statut===currentStatut;});
+  if(currentType) data=data.filter(function(d){return d.type===currentType;});
+  if(searchQ){var q=searchQ.toLowerCase();data=data.filter(function(d){return (d.nom||'').toLowerCase().includes(q)||(d.email||'').toLowerCase().includes(q)||(d.ref||'').toLowerCase().includes(q);});}
+  return data;
+}
+
+/* ── PIPELINE (kanban 7 étapes / liste) ── */
+function renderPipeline(){currentView==='kanban'?renderKanban():renderList();}
+
+function makeCard(d){
+  var t=T.type(d.type),c=t?t.color:'#888';
+  var trigs=Object.values(d.equipe).filter(Boolean).map(function(tr){var m=MANDATAIRES.find(function(x){return x.trig===tr;});return '<div class="k-trig" style="background:'+(m?m.color:'#888')+'" title="'+(m?m.nom:tr)+'">'+tr+'</div>';}).join('');
+  var flags='';
+  if(d.acompteDemande&&d.acompteDemande.statut==='a_traiter') flags+='<span class="k-flag" style="background:var(--ol);color:var(--od)">💶 Acompte à traiter</span>';
+  var factEmise=(d.factures||[]).some(function(f){return f.statut==='emise';});
+  if(factEmise) flags+='<span class="k-flag" style="background:var(--bl);color:var(--bd)">🧾 Facture émise</span>';
+  var dateStr=new Date(d.created).toLocaleDateString('fr-FR',{day:'2-digit',month:'short'});
+  return '<div class="k-card '+(d.statut==='abandonne'?'abandoned':d.statut==='cloture'?'cloture':'')+'" onclick="openFiche(\''+d.id+'\')">'+
+    '<div class="k-type" style="background:'+c+'22;color:'+c+'">'+(t?t.short:d.type)+'</div>'+
+    '<div class="k-name">'+(d.nom||d.email)+'</div>'+
+    '<div class="k-sub">'+d.ref+'</div>'+
+    (flags?'<div class="k-flags">'+flags+'</div>':'')+
+    '<div class="k-foot"><div class="k-trigs">'+trigs+'</div><div class="k-date">📅 '+dateStr+'</div></div>'+
+  '</div>';
+}
+function renderKanban(){
+  var data=getFiltered(),el=document.getElementById('kanban-view');
+  el.innerHTML=T.PIPELINE.map(function(e){
+    var cards=data.filter(function(d){return d.etape===e.n;});
+    var bloc=T.blocForEtape(e.n);
+    return '<div class="k-col">'+
+      '<div class="k-col-head"><span class="k-col-num" style="background:'+(bloc?bloc.color:'#94A3B8')+'">'+e.n+'</span>'+
+        '<span class="k-col-title">'+e.mand+'</span><span class="k-col-count">'+cards.length+'</span></div>'+
+      '<div class="k-bloc-band" style="background:'+(bloc?bloc.color:'#94A3B8')+'44"></div>'+
+      '<div class="k-cards">'+(cards.map(makeCard).join('')||'')+'</div>'+
+    '</div>';
+  }).join('');
+}
+function renderList(){
+  var data=getFiltered();
+  document.getElementById('list-tbody').innerHTML=data.map(function(d){
+    var t=T.type(d.type),c=t?t.color:'#888',e=T.etape(d.etape),bloc=T.blocForEtape(d.etape),st=T.DOSSIER_STATUTS[d.statut];
+    var trigs=Object.values(d.equipe).filter(Boolean).map(function(tr){var m=MANDATAIRES.find(function(x){return x.trig===tr;});return '<div class="k-trig" style="background:'+(m?m.color:'#888')+';display:inline-flex;margin-right:2px">'+tr+'</div>';}).join('');
+    return '<tr onclick="openFiche(\''+d.id+'\')">'+
+      '<td><strong>'+(d.nom||d.email)+'</strong><div style="font-size:10px;color:var(--t3)">'+d.email+'</div></td>'+
+      '<td style="font-family:monospace;font-size:10px">'+d.ref+'</td>'+
+      '<td><span style="font-size:10px;font-weight:700;padding:2px 5px;border-radius:4px;background:'+c+'22;color:'+c+'">'+(t?t.short:d.type)+'</span></td>'+
+      '<td><span style="font-family:monospace;font-weight:700;font-size:11px">'+d.etape+'</span> '+(e?e.mand:'')+'</td>'+
+      '<td>'+(bloc?'<span class="badge" style="background:'+bloc.bg+';color:'+bloc.fg+'">Bloc '+bloc.id+'</span>':'<span class="badge bgr">Amont</span>')+'</td>'+
+      '<td><div style="display:flex;gap:2px">'+trigs+'</div></td>'+
+      '<td><span class="badge '+st.cls+'">'+st.label+'</span></td>'+
+    '</tr>';
+  }).join('');
+}
+
+function openFiche(id){window.location.href='Dossier Timonia (aligne v2.1).html?id='+encodeURIComponent(id);}
+
+/* ── UTILISATEURS ── */
+function renderUsers(){
+  var roleL={admin:'Admin',manager:'Manager',mandataire:'Mandataire'};
+  var rows=MANDATAIRES.slice().sort(function(a,b){return (a.actif===b.actif)?0:(a.actif?1:-1);});
+  document.getElementById('users-list').innerHTML=
+    '<div style="overflow-x:auto"><table><thead><tr>'+
+      ['Compte','Email','Rôle','Spécialité','Statut','Inscription','Trig.',''].map(function(h){return '<th>'+h+'</th>';}).join('')+
+    '</tr></thead><tbody>'+
+    rows.map(function(m){
+      var specL=m.spec?(T.ROLE_LABELS[m.spec]+' · '+T.BAREME[m.spec]+'%'):'—';
+      return '<tr>'+
+        '<td><div style="display:flex;align-items:center;gap:8px"><div class="user-av" style="width:26px;height:26px;font-size:9px;background:'+m.color+'">'+(m.trig?m.trig.slice(0,2):(m.nom||'?')[0])+'</div><strong>'+m.nom+'</strong></div></td>'+
+        '<td style="color:var(--t3);font-size:11px">'+m.email+'</td>'+
+        '<td><span class="badge bp">'+(roleL[m.roleCompte]||'?')+'</span></td>'+
+        '<td style="font-size:11px">'+specL+'</td>'+
+        '<td><span class="badge '+(m.actif?'bg':'bo')+'">'+(m.actif?'Actif':'En attente')+'</span></td>'+
+        '<td style="font-size:11px;color:var(--t3)">'+new Date(m.date_inscription).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})+'</td>'+
+        '<td><span style="font-family:monospace;font-weight:700;font-size:11px">'+(m.trig||'····')+'</span></td>'+
+        '<td>'+(m.actif?'<button class="btn btn-sm">✏️</button>':'<button class="btn btn-g btn-sm" onclick="activerUser(\''+m.email+'\')">Activer</button>')+'</td>'+
+      '</tr>';
+    }).join('')+'</tbody></table></div>';
+}
+function activerUser(email){
+  activerTarget=email;var m=MANDATAIRES.find(function(x){return x.email===email;});
+  document.getElementById('activer-title').childNodes[0].textContent='Activer — '+(m?m.nom:'');
+  var parts=m?m.nom.split(' '):[];
+  document.getElementById('act-trig').value=(parts[0]?parts[0].slice(0,2).toUpperCase():'')+'1';
+  openModal('activerModal');
+}
+function confirmActiver(){
+  if(!activerTarget)return;var m=MANDATAIRES.find(function(x){return x.email===activerTarget;});
+  if(m){m.actif=true;m.trig=document.getElementById('act-trig').value.toUpperCase()||m.trig;m.roleCompte=document.getElementById('act-rolecompte').value;m.spec=document.getElementById('act-spec').value||null;m.zone=document.getElementById('act-zone').value||'—';}
+  closeModal('activerModal');activerTarget=null;refreshBadges();renderUsers();
+  alert('✅ Compte activé. Email de bienvenue envoyé à '+(m?m.email:''));
+}
+
+/* ── FACTURATION (objets Facture indépendants du pipeline) ── */
+function factLignes(scope){
+  var lignes=[];
+  scope.forEach(function(d){
+    (d.factures||[]).forEach(function(f,i){lignes.push({d:d,f:f,idx:i});});
+  });
+  return lignes;
+}
+function renderFacturation(){
+  if(!isPartnerAdmin){renderFacturationMandataire();return;}
+  var lignes=factLignes(DOSSIERS);
+  var sum=function(pred){return lignes.filter(pred).reduce(function(s,l){return s+(+l.f.montant||0);},0);};
+  var aEmettre=sum(function(l){return l.f.statut==='a_emettre'||l.f.statut==='a_valider';});
+  var enAttente=sum(function(l){return l.f.statut==='emise';});
+  var encaisse=sum(function(l){return l.f.statut==='payee';});
+  var acomptes=DOSSIERS.filter(function(d){return d.acompteDemande&&d.acompteDemande.statut==='a_traiter';});
+
+  var html='<div class="grid4">'+
+    '<div class="kpi"><div class="kv" style="color:var(--orange)">'+aEmettre.toLocaleString('fr-FR')+' €</div><div class="kl">À émettre / valider</div></div>'+
+    '<div class="kpi"><div class="kv" style="color:var(--blue)">'+enAttente.toLocaleString('fr-FR')+' €</div><div class="kl">Émis · en attente paiement</div></div>'+
+    '<div class="kpi"><div class="kv" style="color:var(--green)">'+encaisse.toLocaleString('fr-FR')+' €</div><div class="kl">Encaissé</div></div>'+
+    '<div class="kpi"><div class="kv">'+acomptes.length+'</div><div class="kl">Demandes d\'acompte</div></div>'+
+  '</div>';
+
+  // Demandes d'acompte (Rénovation) à traiter par l'admin
+  if(acomptes.length){
+    html+='<div class="card"><div class="card-title">💶 Demandes d\'acompte à traiter <span class="badge bo">Rénovation</span></div>'+
+      acomptes.map(function(d){
+        return '<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)">'+
+          '<div style="flex:1"><strong>'+d.nom+'</strong><div style="font-size:10px;color:var(--t3);font-family:monospace">'+d.ref+'</div></div>'+
+          '<span class="badge bgr">Travaux estimés '+((d.variables.travaux||0).toLocaleString('fr-FR'))+' €</span>'+
+          '<strong>Acompte demandé : '+(d.acompteDemande.montant.toLocaleString('fr-FR'))+' €</strong>'+
+          '<button class="btn btn-g btn-sm" onclick="emettreAcompte(\''+d.id+'\')">🧾 Émettre la facture d\'acompte</button>'+
+        '</div>';
+      }).join('')+'</div>';
+  }
+
+  // Toutes les factures + commissions gelées (base HT)
+  html+='<div class="card"><div class="card-title">🧾 Factures — vue transversale (pipeline & finances = 2 axes)</div>'+
+    '<table><thead><tr><th>Dossier</th><th>Bloc</th><th>Montant TTC</th><th>HT</th><th>Statut</th><th>Commissions (gelées à l\'émission)</th></tr></thead><tbody>'+
+    lignes.map(function(l){
+      var d=l.d,f=l.f,st=T.FACTURE_STATUTS[f.statut];
+      var ht=Math.round((+f.montant||0)/T.TVA);
+      var commHtml='—';
+      if(f.statut==='emise'||f.statut==='payee'){
+        commHtml=['lead','sale','front','back'].filter(function(r){return d.equipe[r];}).map(function(r){
+          var m=MANDATAIRES.find(function(x){return x.trig===d.equipe[r];});
+          return '<span class="badge bgr" title="'+(m?m.nom:'')+'">'+T.ROLE_LABELS[r]+' '+T.commission(r,f.montant).toLocaleString('fr-FR')+' €</span>';
+        }).join(' ')||'—';
+      }
+      var blocLbl=f.kind==='audit'?'Bloc 1 · Audit':f.kind==='acompte'?'Bloc 2 · Acompte':'Bloc 3 · Solde';
+      return '<tr><td><strong>'+(d.nom||d.email)+'</strong><div style="font-size:10px;color:var(--t3);font-family:monospace">'+d.ref+'</div></td>'+
+        '<td>'+blocLbl+'</td>'+
+        '<td><strong>'+(+f.montant||0).toLocaleString('fr-FR')+' €</strong></td>'+
+        '<td style="color:var(--t3)">'+ht.toLocaleString('fr-FR')+' €</td>'+
+        '<td><span class="badge '+st.cls+'">'+st.label+'</span> '+factAction(d,l.idx,f)+'</td>'+
+        '<td style="display:flex;gap:4px;flex-wrap:wrap">'+commHtml+'</td></tr>';
+    }).join('')+'</tbody></table>'+
+    '<div style="font-size:11px;color:var(--t3);margin-top:10px;line-height:1.5">Commission = <strong>% du rôle × (TTC ÷ 1,20)</strong> · barème '+T.BAREME.lead+'/'+T.BAREME.sale+'/'+T.BAREME.front+'/'+T.BAREME.back+' · mandataires 60 % · siège 40 %. <strong>Gelée à l\'émission</strong>, <strong>versée à l\'encaissement</strong>.</div>'+
+  '</div>';
+  document.getElementById('factu-content').innerHTML=html;
+}
+function factAction(d,idx,f){
+  if(f.statut==='a_valider') return '<button class="btn btn-g btn-sm" onclick="factSetStatut(\''+d.id+'\','+idx+',\'a_emettre\')">✓ Valider</button>';
+  if(f.statut==='a_emettre') return '<button class="btn btn-p btn-sm" onclick="factSetStatut(\''+d.id+'\','+idx+',\'emise\')">Émettre →</button>';
+  if(f.statut==='emise') return '<button class="btn btn-g btn-sm" onclick="factSetStatut(\''+d.id+'\','+idx+',\'payee\')">💳 Marquer payée</button>';
+  return '';
+}
+function factSetStatut(dId,idx,st){var d=DOSSIERS.find(function(x){return x.id===dId;});if(!d)return;d.factures[idx].statut=st;renderFacturation();}
+function emettreAcompte(dId){
+  var d=DOSSIERS.find(function(x){return x.id===dId;});if(!d||!d.acompteDemande)return;
+  d.factures.push({bloc:2,kind:'acompte',montant:d.acompteDemande.montant,statut:'emise'});
+  d.acompteDemande.statut='traite';
+  refreshBadges();renderFacturation();
+  alert('🧾 Facture d\'acompte émise ('+d.acompteDemande.montant.toLocaleString('fr-FR')+' € TTC). Lien Stripe envoyé au client.');
+}
+function renderFacturationMandataire(){
+  var mine=myDossiers();var lignes=factLignes(mine);var me=getMyMandataire();var role=null;
+  var rows=lignes.map(function(l){var r=getMyRole(l.d);return {d:l.d,f:l.f,role:r,comm:r?T.commission(r,l.f.montant):0};}).filter(function(x){return x.role;});
+  var gelees=rows.filter(function(x){return x.f.statut==='emise';}).reduce(function(s,x){return s+x.comm;},0);
+  var versables=rows.filter(function(x){return x.f.statut==='payee';}).reduce(function(s,x){return s+x.comm;},0);
+  var html='<div class="grid4">'+
+    '<div class="kpi"><div class="kv" style="color:var(--blue)">'+gelees.toLocaleString('fr-FR')+' €</div><div class="kl">Commissions gelées (en attente paiement client)</div></div>'+
+    '<div class="kpi"><div class="kv" style="color:var(--green)">'+versables.toLocaleString('fr-FR')+' €</div><div class="kl">Exigibles (client a payé)</div></div>'+
+    '<div class="kpi"><div class="kv">'+mine.filter(function(d){return d.statut==='en_cours';}).length+'</div><div class="kl">Mes dossiers en cours</div></div>'+
+    '<div class="kpi"><div class="kv">'+rows.length+'</div><div class="kl">Mes lignes de commission</div></div>'+
+  '</div>';
+  html+='<div class="card"><div class="card-title">💰 Mes commissions</div>'+
+    (rows.length?'<table><thead><tr><th>Dossier</th><th>Mon rôle</th><th>Facture</th><th>Statut</th><th>Ma commission (HT)</th></tr></thead><tbody>'+
+    rows.map(function(x){var st=T.FACTURE_STATUTS[x.f.statut];var blocLbl=x.f.kind==='audit'?'Bloc 1':x.f.kind==='acompte'?'Bloc 2':'Bloc 3';
+      return '<tr><td><strong>'+(x.d.nom||x.d.email)+'</strong><div style="font-size:10px;color:var(--t3);font-family:monospace">'+x.d.ref+'</div></td>'+
+      '<td><span class="badge bgr">'+T.ROLE_LABELS[x.role]+' · '+T.BAREME[x.role]+'%</span></td>'+
+      '<td>'+blocLbl+' — '+(+x.f.montant||0).toLocaleString('fr-FR')+' € TTC</td>'+
+      '<td><span class="badge '+st.cls+'">'+st.label+'</span></td>'+
+      '<td><strong>'+x.comm.toLocaleString('fr-FR')+' €</strong></td></tr>';
+    }).join('')+'</tbody></table>':'<div style="text-align:center;padding:24px;color:var(--t3)">Aucune commission pour le moment.</div>')+
+    '<div style="font-size:11px;color:var(--t3);margin-top:10px">La commission est <strong>gelée</strong> quand Timonia émet la facture, et devient <strong>versable</strong> quand le client la paie.</div>'+
+  '</div>';
+  document.getElementById('factu-content').innerHTML=html;
+}
+
+/* ── STATS ── */
+function renderStats(){
+  var cloture=DOSSIERS.filter(function(d){return d.statut==='cloture';}).length;
+  var abandonne=DOSSIERS.filter(function(d){return d.statut==='abandonne';}).length;
+  var enCours=DOSSIERS.filter(function(d){return d.statut==='en_cours';}).length;
+  var taux=(cloture+abandonne)?Math.round(cloture/(cloture+abandonne)*100):0;
+  document.getElementById('stats-content').innerHTML=
+    '<div class="grid4">'+
+      '<div class="kpi"><div class="kv" style="color:var(--blue)">'+enCours+'</div><div class="kl">Dossiers en cours</div></div>'+
+      '<div class="kpi"><div class="kv" style="color:var(--green)">'+cloture+'</div><div class="kl">Clôturés (gagnés)</div></div>'+
+      '<div class="kpi"><div class="kv" style="color:var(--red)">'+abandonne+'</div><div class="kl">Abandonnés (perdus)</div></div>'+
+      '<div class="kpi"><div class="kv" style="color:var(--orange)">'+taux+'%</div><div class="kl">Taux de conversion</div></div>'+
+    '</div>'+
+    '<div class="card"><div style="font-size:11px;color:var(--t3);line-height:1.6">Conversion = <strong>Clôturés ÷ (Clôturés + Abandonnés)</strong> — les dossiers en cours et livrés ne polluent pas la mesure (règle du référentiel).</div></div>'+
+    '<div class="card"><div class="card-title">👥 Répartition par type de projet</div>'+
+      T.TYPE_ORDER.map(function(k){var t=T.TYPES[k];var n=DOSSIERS.filter(function(d){return d.type===k;}).length;var pctW=DOSSIERS.length?Math.round(n/DOSSIERS.length*100):0;
+        return '<div style="display:flex;align-items:center;gap:10px;padding:6px 0"><span style="min-width:150px;font-size:12px;font-weight:600">'+t.short+'</span>'+
+          '<div style="flex:1;height:8px;background:var(--bg);border-radius:5px;overflow:hidden"><div style="height:100%;width:'+pctW+'%;background:'+t.color+'"></div></div>'+
+          '<strong style="min-width:30px;text-align:right">'+n+'</strong></div>';
+      }).join('')+
+    '</div>';
+}
+
+/* ── CRÉER DOSSIER (démarre étape 01) ── */
+function createDossier(){
+  var nom=document.getElementById('nc-nom').value.trim(),email=document.getElementById('nc-email').value.trim();
+  if(!nom&&!email){alert('Nom ou email requis.');return;}
+  var me=getMyMandataire();var saleTrig=me?me.trig:null;
+  DOSSIERS.unshift({id:'D'+Date.now(),ref:'TIM-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*900)+100),
+    nom:nom,email:email,tel:document.getElementById('nc-tel').value.trim(),
+    type:'recherche-location',etape:'01',statut:'en_cours',created:new Date().toISOString().slice(0,10),
+    equipe:{lead:null,sale:saleTrig,front:null,back:null},pct:{lead:0,sale:saleTrig?10:0,front:0,back:0},
+    situation:'À renseigner.',objectif:"À définir lors du Conseil Flash.",variables:{},factures:[],acompteDemande:null,messages_pub:[],messages_priv:[]});
+  closeModal('newDossierModal');['nc-nom','nc-email','nc-tel'].forEach(function(id){document.getElementById(id).value='';});
+  renderPipeline();
+}
+
+/* ── MODAL ── */
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+</script>
+</body>
+</html>
